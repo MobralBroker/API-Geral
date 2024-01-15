@@ -1,10 +1,10 @@
 package com.solinfbroker.apigeral.controller;
 
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "/empresa")
-public class EmpresaController {
+@RequestMapping(value = "/ativo")
+public class AtivoController {
   
 }
