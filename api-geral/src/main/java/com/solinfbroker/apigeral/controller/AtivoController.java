@@ -1,5 +1,6 @@
 package com.solinfbroker.apigeral.controller;
 
+
 import com.solinfbroker.apigeral.model.AtivoModel;
 import com.solinfbroker.apigeral.repository.AtivoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,4 +27,5 @@ public class AtivoController {
     private ResponseEntity criarAtivo(@RequestBody AtivoModel ativo){
         return ResponseEntity.ok(ativoRepository.save(ativo));
     }
+
 }

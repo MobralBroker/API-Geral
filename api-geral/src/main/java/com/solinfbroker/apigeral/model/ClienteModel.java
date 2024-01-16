@@ -50,8 +50,8 @@ public class ClienteModel{
     private enumTipoPessoa tipo;
 
     private String nomeUsuario;
-
-    private String senha;
+//
+//    private String senha;
 
     private String email;
 

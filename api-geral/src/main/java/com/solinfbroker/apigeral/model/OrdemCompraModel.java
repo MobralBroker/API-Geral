@@ -16,18 +16,28 @@ public class OrdemCompraModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "id_cliente", nullable = false)
+    private Long idCliente;
+
+    @Column(name = "id_ativo", nullable = false)
+    private Long idAtivo;
+
     private double valorCompra;
+
     private LocalDateTime dataCompra;
+
     private Integer quantidade; //TODO alterar banco
+
     private enumStatusOperacao status; //TODO alterar banco
+
     private LocalDateTime dataExecutada;
 
-    @ManyToOne(fetch = FetchType.LAZY,optional = false)
-    @JoinColumn(name = "id_cliente")
+    @ManyToOne
+    @JoinColumn(name = "id_cliente", referencedColumnName = "id", insertable = false, updatable = false)
     private ClienteModel cliente;
 
-    @ManyToOne(fetch = FetchType.LAZY,optional = false)
-    @JoinColumn(name = "id_ativo")
+    @ManyToOne
+    @JoinColumn(name = "id_ativo", referencedColumnName = "id", insertable = false, updatable = false)
     private AtivoModel ativo;
 
     @ManyToMany(fetch = FetchType.EAGER)
