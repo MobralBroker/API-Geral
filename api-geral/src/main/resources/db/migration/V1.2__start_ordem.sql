@@ -7,7 +7,7 @@ CREATE TABLE ordem_compra (
     data_compra DATE NOT NULL,
     quantidade INT NOT NULL,
     status VARCHAR(3) NOT NULL,
-	data_executada DATE NOT NULL,
+	data_executada TIMESTAMP NOT NULL,
     FOREIGN KEY (id_cliente) REFERENCES cliente(id),
     FOREIGN KEY (id_ativo) REFERENCES cliente(id) 
 );
@@ -21,7 +21,7 @@ CREATE TABLE ordem_venda (
     data_venda DATE NOT NULL,
     quantidade INT NOT NULL,
     status VARCHAR(3) NOT NULL,
-	data_executada DATE NOT NULL,
+	data_executada TIMESTAMP NOT NULL,
     FOREIGN KEY (id_cliente) REFERENCES cliente(id),
     FOREIGN KEY (id_ativo) REFERENCES cliente(id)
 );
@@ -33,7 +33,7 @@ CREATE TABLE compra_venda (
     id_venda BIGINT NOT NULL,
 	quantidade INT NOT NULL,
 	situacao VARCHAR(3) NOT NULL,
-    data_executada DATE NOT NULL,
+    data_executada TIMESTAMP NOT NULL,
     FOREIGN KEY (id_compra) REFERENCES ordem_compra(id),
     FOREIGN KEY (id_venda) REFERENCES ordem_venda(id)
 );
@@ -52,7 +52,7 @@ CREATE TABLE ativo (
     id_empresa BIGINT NOT NULL,
     sigla VARCHAR(10) NOT NULL,
     nome VARCHAR(50) NOT NULL,
-    atualizacao DATE NOT NULL,
+    atualizacao TIMESTAMP NOT NULL,
     quantidades_papeis INT NOT NULL,
     valor_max DOUBLE PRECISION NOT NULL,
     valor_min DOUBLE PRECISION NOT NULL,
