@@ -13,7 +13,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode
 @Table(name = "empresa")
-public class Empresa {
+public class EmpresaModel {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
