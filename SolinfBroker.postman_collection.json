@@ -1,0 +1,502 @@
+{
+	"info": {
+		"_postman_id": "85c4bb94-3a40-4a59-980c-b085d38a84cc",
+		"name": "SolinfBroker",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "3588236"
+	},
+	"item": [
+		{
+			"name": "Autenticação",
+			"item": [
+				{
+					"name": "Registrar Usuario",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nomeUsuario\": \"michael\",\r\n    \"email\":\"michael@teste.com\",\r\n    \"tipo\": \"PJ\",\r\n    \"saldo\": 0.00,\r\n    \"senha\":\"teste\",\r\n    \"role\":[],\r\n    \"pessoaFisica\":[\r\n    ],\r\n    \"pessoaJuridica\":[{\r\n        \"nomeFantasia\":\"44\",\r\n        \"razaoSocial\":\"aa\",\r\n        \"cnpj\":\"13386640000123\"\r\n    }]\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/auth/register",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login Usuario",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"michael@teste.com\",\r\n    \"senha\": \"teste\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/auth/login",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Validar Token",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{path}}:8080/auth/validar",
+							"host": [
+								"{{path}}"
+							],
+							"port": "8080",
+							"path": [
+								"auth",
+								"validar"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhdXRoLWFwaSIsInN1YiI6InRlc3RlMiIsImV4cCI6MTcwMzc5Njc1N30.Hx-FD7Cz6dsebr7YLCo-U-FQ8O20-dv_nCe6V6w-3R0",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Buscar Cliente - email",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhdXRoLWFwaSIsInN1YiI6InRlc3RlQHRlc3RlIiwiZXhwIjoxNzA0ODEwODY0fQ.ifkGIedjFZEB0E5FFgPcaKvdMv7MXdJaPa-EWB_fF8E",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhdXRoLWFwaSIsInN1YiI6InRlc3RlQHRlc3RlIiwiZXhwIjoxNzA0ODEwODY0fQ.ifkGIedjFZEB0E5FFgPcaKvdMv7MXdJaPa-EWB_fF8E\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/auth/usuario/teste22@teste87w37.com",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"auth",
+								"usuario",
+								"teste22@teste87w37.com"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Configuração KafkaConect",
+			"item": [
+				{
+					"name": "Criar Conector",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"inventory-connector\",\n    \"config\": {\n        \"connector.class\": \"io.debezium.connector.postgresql.PostgresConnector\",\n        \"task.max\":\"1\",\n        \"database.hostname\": \"postgresql\",\n        \"database.port\": \"5432\",\n        \"database.user\": \"root\",\n        \"database.password\": \"admin\",\n        \"database.dbname\": \"database_master\",\n        \"plugin.name\":\"pgoutput\",\n        \"database.server.name\": \"solinfbroker\",\n        \"key.converter.schemas.enable\":false,\n        \"value.converter.schemas.enable\":false,\n        \"transforms\":\"unwrap\",\n        \"transforms.unwrap.type\" : \"io.debezium.transforms.ExtractNewRecordState\",\n        \"transforms.unwrap.add.fields\":\"op\",\n        \"transforms.unwrap.drop.tombstones\" : \"false\",\n        \"transforms.unwrap.delete.handling.mode\" : \"none\", //mudar para rewrite\n        \"key.converter\":\"org.apache.kafka.connect.json.JsonConverter\",\n        \"value.converter\":\"org.apache.kafka.connect.json.JsonConverter\",\n        \"table.include.list\": \"public.cliente, public.permissoes\",\n        \"slot.name\":\"db_cliente\"\n    }\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8083/connectors",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8083",
+							"path": [
+								"connectors"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Listar Conectores",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8083/connectors",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8083",
+							"path": [
+								"connectors"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Deletar Conector ",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8083/connectors/[nome-conector]",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8083",
+							"path": [
+								"connectors",
+								"[nome-conector]"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Empresa",
+			"item": [
+				{
+					"name": "Criar Empresa",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"razaoSocial\":\"empresa 1\",\n    \"nomeFantasia\":\"empresa fant 1\",\n    \"cnpj\":\"11111111111221\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8081/empresa",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"empresa"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cadastro Ativo",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"sigla\":\"EMP01\",\n    \"nome\":\"empresa 1\",\n    \"atualizacao\":\"01/01/2000\",\n    \"quantidadesPapeis\":100,\n    \"valorMax\":1.00,\n    \"valorMin\":1.00,\n    \"valor\":1.00,\n    \"idEmpresa\":1\n}\n\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8081/ativo",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"ativo"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Listar Empresas",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8081/empresa",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"empresa"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Buscar Empresa",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8081/empresa/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"empresa",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Listar Ativos",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8081/ativo",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"ativo"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Buscar Ativo",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8081/ativo/3",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"ativo",
+								"3"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Ordens",
+			"item": [
+				{
+					"name": "Criar Ordem",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"idCliente\": 1,\n    \"idAtivo\": 1,\n    \"tipoOrdem\": \"ORDEM_VENDA\",\n    \"valorOrdem\": 1.00,\n    \"dataLancamento\": \"2021-06-15T16:30:00\",\n    \"quantidadeOrdem\": 10,\n    \"quantidadeAberto\": 10,\n    \"statusOrdem\": \"ABERTA\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8081/ordem",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"ordem"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Listar Ordem",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:8081/ordem/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"ordem",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Operação",
+			"item": [
+				{
+					"name": "Get Operação",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:8081/operacao/operacao",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"operacao",
+								"operacao"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "token",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhdXRoLWFwaSIsInN1YiI6Im1pY2hhZWxAdGVzdGUuY29tIiwiZXhwIjoxNzA1NDQ0NzcyfQ.y4qJ2MMuQPFFW0_z5OnL7tWTnrsmpZycrOirZ69sAWQ",
+			"type": "string"
+		}
+	]
+}
