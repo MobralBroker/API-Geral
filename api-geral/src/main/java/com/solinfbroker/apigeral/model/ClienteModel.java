@@ -46,24 +46,7 @@ public class ClienteModel{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Enumerated(EnumType.STRING)
-    private enumTipoPessoa tipo;
-
+    @Column(name = "nome_usuario")
     private String nomeUsuario;
-//
-//    private String senha;
-
-    private String email;
-
-    private double saldo;
-
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "id_cliente")
-    private Set<PessoaFisica> pessoaFisica = new HashSet<>();
-
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "id_cliente")
-    private Set<PessoaJuridica> pessoaJuridica = new HashSet<>();
-
 
 }

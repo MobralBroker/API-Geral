@@ -1,41 +1,27 @@
 -- Tabela para armazenar informações sobre ordens de compra, com chave estrangeira referenciando a tabela cliente
-CREATE TABLE ordem_compra (
+CREATE TABLE ordem (
     id BIGSERIAL PRIMARY KEY NOT NULL,
     id_cliente BIGINT NOT NULL,
     id_ativo BIGINT NOT NULL,
-    valor_compra DOUBLE PRECISION NOT NULL,
-    data_compra DATE NOT NULL,
-    quantidade INT NOT NULL,
-    status VARCHAR(3) NOT NULL,
-	data_executada TIMESTAMP NOT NULL,
-    FOREIGN KEY (id_cliente) REFERENCES cliente(id),
-    FOREIGN KEY (id_ativo) REFERENCES cliente(id) 
-);
-
--- Tabela para armazenar informações sobre ordens de venda, com chave estrangeira referenciando a tabela cliente
-CREATE TABLE ordem_venda (
-    id BIGSERIAL PRIMARY KEY NOT NULL,
-    id_cliente BIGINT NOT NULL,
-    id_ativo BIGINT NOT NULL, -- Adicionando a nova coluna para a chave estrangeira
-    valor_venda DOUBLE PRECISION NOT NULL,
-    data_venda DATE NOT NULL,
-    quantidade INT NOT NULL,
-    status VARCHAR(3) NOT NULL,
-	data_executada TIMESTAMP NOT NULL,
+    tipo_ordem VARCHAR(12) NOT NULL,
+    valor_ordem DOUBLE PRECISION NOT NULL,
+	data_lancamento TIMESTAMP NOT NULL,
+    quantidade_ordem INT NOT NULL DEFAULT 1,
+    quantidade_ordem_aberta INT NOT NULL DEFAULT 0,
+    status_ordem VARCHAR(10) NOT NULL,
     FOREIGN KEY (id_cliente) REFERENCES cliente(id),
     FOREIGN KEY (id_ativo) REFERENCES cliente(id)
 );
-
--- Tabela para armazenar informações sobre a relação N para N entre ordens de compra e ordens de venda
-CREATE TABLE compra_venda (
+-- Tabela para armazenar informações sobre ordens de compra, com chave estrangeira referenciando a tabela cliente
+CREATE TABLE operacao (
     id BIGSERIAL PRIMARY KEY NOT NULL,
     id_compra BIGINT NOT NULL,
     id_venda BIGINT NOT NULL,
 	quantidade INT NOT NULL,
-	situacao VARCHAR(3) NOT NULL,
-    data_executada TIMESTAMP NOT NULL,
-    FOREIGN KEY (id_compra) REFERENCES ordem_compra(id),
-    FOREIGN KEY (id_venda) REFERENCES ordem_venda(id)
+    data_execucao TIMESTAMP NOT NULL,
+	status_operacao VARCHAR(10) NOT NULL,
+    FOREIGN KEY (id_compra) REFERENCES ordem(id),
+    FOREIGN KEY (id_venda) REFERENCES ordem(id)
 );
 
 -- Tabela para armazenar informações sobre empresas
