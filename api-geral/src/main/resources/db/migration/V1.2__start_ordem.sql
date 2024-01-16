@@ -1,43 +1,3 @@
--- Tabela para armazenar informações sobre ordens de compra, com chave estrangeira referenciando a tabela cliente
-CREATE TABLE ordem_compra (
-    id BIGSERIAL PRIMARY KEY NOT NULL,
-    id_cliente BIGINT NOT NULL,
-    id_ativo BIGINT NOT NULL,
-    valor_compra DOUBLE PRECISION NOT NULL,
-    data_compra DATE NOT NULL,
-    quantidade INT NOT NULL,
-    status VARCHAR(3) NOT NULL,
-	data_executada TIMESTAMP NOT NULL,
-    FOREIGN KEY (id_cliente) REFERENCES cliente(id),
-    FOREIGN KEY (id_ativo) REFERENCES cliente(id) 
-);
-
--- Tabela para armazenar informações sobre ordens de venda, com chave estrangeira referenciando a tabela cliente
-CREATE TABLE ordem_venda (
-    id BIGSERIAL PRIMARY KEY NOT NULL,
-    id_cliente BIGINT NOT NULL,
-    id_ativo BIGINT NOT NULL, -- Adicionando a nova coluna para a chave estrangeira
-    valor_venda DOUBLE PRECISION NOT NULL,
-    data_venda DATE NOT NULL,
-    quantidade INT NOT NULL,
-    status VARCHAR(3) NOT NULL,
-	data_executada TIMESTAMP NOT NULL,
-    FOREIGN KEY (id_cliente) REFERENCES cliente(id),
-    FOREIGN KEY (id_ativo) REFERENCES cliente(id)
-);
-
--- Tabela para armazenar informações sobre a relação N para N entre ordens de compra e ordens de venda
-CREATE TABLE compra_venda (
-    id BIGSERIAL PRIMARY KEY NOT NULL,
-    id_compra BIGINT NOT NULL,
-    id_venda BIGINT NOT NULL,
-	quantidade INT NOT NULL,
-	situacao VARCHAR(3) NOT NULL,
-    data_executada TIMESTAMP NOT NULL,
-    FOREIGN KEY (id_compra) REFERENCES ordem_compra(id),
-    FOREIGN KEY (id_venda) REFERENCES ordem_venda(id)
-);
-
 -- Tabela para armazenar informações sobre empresas
 CREATE TABLE empresa (
     id BIGSERIAL PRIMARY KEY NOT NULL,
@@ -60,6 +20,31 @@ CREATE TABLE ativo (
     FOREIGN KEY (id_empresa) REFERENCES empresa(id)
 );
 
+-- Tabela para armazenar informações sobre ordens de compra, com chave estrangeira referenciando a tabela cliente
+CREATE TABLE ordem (
+    id BIGSERIAL PRIMARY KEY NOT NULL,
+    id_cliente BIGINT NOT NULL,
+    id_ativo BIGINT NOT NULL,
+    tipo_ordem VARCHAR(12) NOT NULL,
+    valor_ordem DOUBLE PRECISION NOT NULL,
+	data_lancamento TIMESTAMP NOT NULL,
+    quantidade_ordem INT NOT NULL DEFAULT 1,
+    quantidade_ordem_aberta INT NOT NULL DEFAULT 0,
+    status_ordem VARCHAR(10) NOT NULL,
+    FOREIGN KEY (id_cliente) REFERENCES cliente(id),
+    FOREIGN KEY (id_ativo) REFERENCES ativo(id)
+);
+-- Tabela para armazenar informações sobre ordens de compra, com chave estrangeira referenciando a tabela cliente
+CREATE TABLE operacao (
+    id BIGSERIAL PRIMARY KEY NOT NULL,
+    id_compra BIGINT NOT NULL,
+    id_venda BIGINT NOT NULL,
+	quantidade INT NOT NULL,
+    data_execucao TIMESTAMP NOT NULL,
+	status_operacao VARCHAR(10) NOT NULL,
+    FOREIGN KEY (id_compra) REFERENCES ordem(id),
+    FOREIGN KEY (id_venda) REFERENCES ordem(id)
+);
 -- Tabela para armazenar histórico de preços de ativos, com chave estrangeira referenciando a tabela ativo
 CREATE TABLE IF NOT EXISTS historico_preco (
     id BIGSERIAL PRIMARY KEY NOT NULL,
