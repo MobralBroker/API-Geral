@@ -17,7 +17,7 @@ public class AtivoModel {
     private Long id;
 
     @Column(name = "id_empresa", nullable = false)
-    private long idEmpresa;
+    private Long idEmpresa;
 
     @Column(name = "sigla", nullable = false, length = 10)
     private String sigla;
