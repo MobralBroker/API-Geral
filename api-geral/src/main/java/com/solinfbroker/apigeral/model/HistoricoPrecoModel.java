@@ -19,7 +19,7 @@ public class HistoricoPrecoModel {
   private Long idAtivo;
 
   @Column(name = "data_valor", nullable = false)
-  @JsonFormat(pattern="dd/MM/yyyy")
+  @JsonFormat(pattern="dd/MM/yyyy@HH:mm:ss")
   private LocalDate dataValor;
 
   @Column(name = "valor_do_ativo", nullable = false)
