@@ -1,6 +1,5 @@
 package com.solinfbroker.apigeral.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
