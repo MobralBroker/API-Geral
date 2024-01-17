@@ -11,13 +11,17 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public class ApiException {
-    private final String mensagem;
-    private final HttpStatus httpStatus;
-    private final LocalDateTime timeStamp;
+    private String mensagem;
+    private HttpStatus httpStatus;
+    private LocalDateTime timeStamp;
 
     public ApiException(String mensagem, HttpStatus httpStatus, LocalDateTime timeStamp) {
         this.mensagem = mensagem;
         this.httpStatus = httpStatus;
         this.timeStamp = timeStamp;
     }
+    public ApiException() {
+    }
+
+
 }

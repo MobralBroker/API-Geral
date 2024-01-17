@@ -25,23 +25,31 @@ public class SecurityFilter extends OncePerRequestFilter{
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException{
         var token = this.recoveryToken(request); 
-//        try {
+        try {
             if(token != null){
-                ResponseEntity<String> responseAuth = restTemplate.getForEntity(pathAutenticacao+"/auth/validar?token="+token, String.class);
-                if(responseAuth.getStatusCode().equals(HttpStatus.UNAUTHORIZED)){
-                    throw new ApiRequestException("Token Inválido, refaça o login para liberar o acesso!");
+                try {
+                    ResponseEntity<String> responseAuth = restTemplate.getForEntity(pathAutenticacao+"/auth/validar?token="+token, String.class);
+                    if(responseAuth.getStatusCode().equals(HttpStatus.UNAUTHORIZED)){
+                        throw new ApiRequestException("Token Inválido, refaça o login para liberar o acesso!");
+                    }
+                }catch (Exception e){
+                    response.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
+                    response.setCharacterEncoding("UTF-8");
+                    response.getWriter().println("Token Inválido, refaça o login para liberar o acesso!");
+//                    throw new ApiRequestException("Token Inválido, refaça o login para liberar o acesso!");
+
                 }
             }else{
                 throw new ApiRequestException("Token Inválido, refaça o login para liberar o acesso!");
             }
             filterChain.doFilter(request, response);
 
-//        }catch (Exception e){
-//
-//            response.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
-//            response.setCharacterEncoding("UTF-8");
-//            response.getWriter().println("Token Inválido, refaça o login para liberar o acesso!");
-//        }
+        }catch (Exception e){
+
+            response.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().println("Token Inválido, refaça o login para liberar o acesso!");
+        }
 
     }
 

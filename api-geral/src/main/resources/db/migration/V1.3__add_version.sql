@@ -1,0 +1,1 @@
+ALTER TABLE ordem ADD COLUMN versao BIGINT;

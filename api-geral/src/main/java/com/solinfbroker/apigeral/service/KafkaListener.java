@@ -46,7 +46,7 @@ public class KafkaListener {
     @SneakyThrows
     @org.springframework.kafka.annotation.KafkaListener(topics = Topicos.DB_CLIENTE,  groupId = Topicos.DB_CLIENTE)
     public void listeningAtualizacaoBanco(ConsumerRecord<String, String> record)  {
-        LOG.info("Cliente: {}", record.value());
+        LOG.info("ClienteController: {}", record.value());
         /* Business rule code with message */
     }
 

@@ -3,9 +3,6 @@ package com.solinfbroker.apigeral.model;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.HashSet;
-import java.util.Set;
-
 /**
  * Classe ClienteModel é uma entidade representante da tabela "cliente" no banco de dados.
  * Essa classe implementa UserDetails para fornecer autenticação e autorização para os usuários.
@@ -49,4 +46,9 @@ public class ClienteModel{
     @Column(name = "nome_usuario")
     private String nomeUsuario;
 
+    @Column(name = "email")
+    private String email;
+
+    @Column(name = "saldo")
+    private double saldo;
 }
