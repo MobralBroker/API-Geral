@@ -46,4 +46,17 @@ public class ClienteService {
         }
         return clienteSalvo;
     }
+
+    public ClienteModel atualizarUsuario(ClienteModel clienteModel, Long id){
+        Optional<ClienteModel> cliente = clienteRepository.findById(id);
+        ClienteModel clienteSalvo = new ClienteModel();
+        if(cliente.isPresent()){
+                cliente.get().setNomeUsuario(clienteModel.getNomeUsuario());
+                cliente.get().setEmail(clienteModel.getEmail());
+                clienteSalvo = clienteRepository.save(cliente.get());
+        }else {
+            throw new RecursoNaoEncontradoException("Cliente ", "id", id);
+        }
+        return clienteSalvo;
+    }
 }
