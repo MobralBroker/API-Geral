@@ -122,32 +122,32 @@ public class OrdemService {
         return ordem;
     }
 
-    public void testarConcorrencia(Long id) {
-
-        // Thread 1
-        new Thread(() -> {
-            Ordem ordem = ordemRepository.findById(id).get();
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            ordem.setStatusOrdem(enumStatus.CANCELADA);
-            try {
-            ordemRepository.save(ordem);
-        }catch (ObjectOptimisticLockingFailureException ex){
-            System.out.println("opa");
-            throw new RecursoNaoAceitoException("Cancelar Ordem ", "pois esta ordem já foi processada");
-        }
-        }).start();
-
-        // Thread 2
-        new Thread(() -> {
-            Ordem ordem = ordemRepository.findById(id).get();
-            ordem.setStatusOrdem(enumStatus.EXECUTADA);
-            ordemRepository.save(ordem);
-        }).start();
-    }
+//    public void testarConcorrencia(Long id) {
+//
+//        // Thread 1
+//        new Thread(() -> {
+//            Ordem ordem = ordemRepository.findById(id).get();
+//            try {
+//                Thread.sleep(2000);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//            ordem.setStatusOrdem(enumStatus.CANCELADA);
+//            try {
+//            ordemRepository.save(ordem);
+//        }catch (ObjectOptimisticLockingFailureException ex){
+//            System.out.println("opa");
+//            throw new RecursoNaoAceitoException("Cancelar Ordem ", "pois esta ordem já foi processada");
+//        }
+//        }).start();
+//
+//        // Thread 2
+//        new Thread(() -> {
+//            Ordem ordem = ordemRepository.findById(id).get();
+//            ordem.setStatusOrdem(enumStatus.EXECUTADA);
+//            ordemRepository.save(ordem);
+//        }).start();
+//    }
 
 
 
