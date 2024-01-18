@@ -6,6 +6,9 @@ import com.solinfbroker.apigeral.repository.AtivoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @RestController
 @RequestMapping("/ativo")
@@ -27,5 +30,11 @@ public class AtivoController {
     private ResponseEntity criarAtivo(@RequestBody AtivoModel ativo){
         return ResponseEntity.ok(ativoRepository.save(ativo));
     }
+
+    @GetMapping("/empresa")
+    private ResponseEntity listarAtivosEmpresa(@RequestParam("idEmpresa") Long id) {
+        return ResponseEntity.ok(ativoRepository.findByEmpresaId(id));
+    }
+    
 
 }

@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -20,7 +21,7 @@ public class HistoricoPrecoModel {
 
   @Column(name = "data_valor", nullable = false)
   @JsonFormat(pattern="dd/MM/yyyy@HH:mm:ss")
-  private LocalDate dataValor;
+  private LocalDateTime dataValor;
 
   @Column(name = "valor_do_ativo", nullable = false)
   private double valorDoAtivo;
