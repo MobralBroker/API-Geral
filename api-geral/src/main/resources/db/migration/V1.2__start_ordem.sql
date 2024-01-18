@@ -49,14 +49,13 @@ CREATE TABLE operacao (
 CREATE TABLE IF NOT EXISTS historico_preco (
     id BIGSERIAL PRIMARY KEY NOT NULL,
     id_ativo BIGINT NOT NULL,
-    data_valor DATE NOT NULL,
+    data_valor TIMESTAMP NOT NULL,
     valor_do_ativo DOUBLE PRECISION NOT NULL,
     FOREIGN KEY (id_ativo) REFERENCES ativo(id)
 );
 
 -- Tabela para armazenar informações sobre a carteira de um cliente, com chaves estrangeiras referenciando as tabelas cliente e ativo
 CREATE TABLE carteira (
-    id BIGSERIAL PRIMARY KEY NOT NULL,
     id_cliente BIGINT NOT NULL,
     id_ativo BIGINT NOT NULL,
     quantidade INT NOT NULL,
@@ -65,16 +64,16 @@ CREATE TABLE carteira (
     FOREIGN KEY (id_ativo) REFERENCES ativo(id)
 );
 
--- Trigger de Log para gerar Histório de Preços
+-- Trigger de Log para gerar Histórico de Preços
 -- Função que é executada após uma atualização na tabela ativo, registrando o histórico de preços
 CREATE OR REPLACE FUNCTION after_update_ativo()
 RETURNS TRIGGER AS $$
 BEGIN
     -- Verifica se o valor da coluna "valor" foi alterado
     IF NEW.valor <> OLD.valor THEN
-        -- Insere um novo registro na tabela historico_preco
+        -- Insere um novo registro na tabela historico_preco com data e hora atual
         INSERT INTO historico_preco (id_ativo, data_valor, valor_do_ativo)
-        VALUES (OLD.id, CURRENT_DATE, OLD.valor);
+        VALUES (OLD.id_ativo, CURRENT_TIMESTAMP, OLD.valor);
     END IF;
     RETURN NEW;
 END;
@@ -85,3 +84,24 @@ CREATE TRIGGER after_update_ativo
 AFTER UPDATE ON ativo
 FOR EACH ROW
 EXECUTE FUNCTION after_update_ativo();
+
+-- Trigger de Log para gerar Histório de Preços
+-- Função que é executada após uma atualização na tabela ativo, registrando o histórico de preços
+-- CREATE OR REPLACE FUNCTION after_update_ativo()
+-- RETURNS TRIGGER AS $$
+-- BEGIN
+--     -- Verifica se o valor da coluna "valor" foi alterado
+--     IF NEW.valor <> OLD.valor THEN
+--         -- Insere um novo registro na tabela historico_preco
+--         INSERT INTO historico_preco (id_ativo, data_valor, valor_do_ativo)
+--         VALUES (OLD.id, CURRENT_DATE, OLD.valor);
+--     END IF;
+--     RETURN NEW;
+-- END;
+-- $$ LANGUAGE plpgsql;
+
+-- -- Trigger associada à função, executada após uma atualização na tabela ativo
+-- CREATE TRIGGER after_update_ativo
+-- AFTER UPDATE ON ativo
+-- FOR EACH ROW
+-- EXECUTE FUNCTION after_update_ativo();
