@@ -1,16 +1,33 @@
+HELP.md
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
 ### VS Code ###
-*.jar
-teste-microservice/.vscode
-teste-microservice/postgres-data
-teste-microservice/api-autenticacao/target
-teste-microservice/api-autenticacao/.mvn/wrapper/maven-wrapper.jar
-teste-microservice/api-autenticacao/database-doker
-
-teste-microservice/api-entidades/target
-teste-microservice/api-entidades/.mvn/wrapper/maven-wrapper.jar
-
-teste-microservice/api-gateway/target
-teste-microservice/api-gateway/.mvn/wrapper/maven-wrapper.jar
-
-teste-microservice/registro/target
-teste-microservice/registro/.mvn/wrapper/maven-wrapper.jar
+.vscode/
