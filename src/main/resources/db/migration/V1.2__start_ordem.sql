@@ -31,6 +31,7 @@ CREATE TABLE ordem (
     quantidade_ordem INT NOT NULL DEFAULT 1,
     quantidade_ordem_aberta INT NOT NULL DEFAULT 0,
     status_ordem VARCHAR(10) NOT NULL,
+    versao BIGINT,
     FOREIGN KEY (id_cliente) REFERENCES cliente(id),
     FOREIGN KEY (id_ativo) REFERENCES ativo(id)
 );
