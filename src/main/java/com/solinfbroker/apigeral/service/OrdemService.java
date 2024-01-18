@@ -88,8 +88,12 @@ public class OrdemService {
                     ordemSalvar.setDataLancamento(LocalDateTime.now());
                     ordemSalvar.setQuantidadeAberto(ordemSalvar.getQuantidadeOrdem());
                     ordemSalva = ordemRepository.save(ordemSalvar);
+
+                    cliente.get().setValorBloqueado(valorOrdem); // Bloqueio do saldo do cliente
+                    cliente.get().setSaldo(cliente.get().getSaldo() - valorOrdem);
+                    clienteRepository.save(cliente.get());
                 }else{
-                    throw new RecursoNaoAceitoException("Criar Ordem", "saldo Insulficiente");
+                    throw new RecursoNaoAceitoException("Criar Ordem", "saldo Insulficiente ou bloqueado!");
                 }
             }
         }else{
@@ -113,6 +117,11 @@ public class OrdemService {
         }else{
             ordem.setStatusOrdem(enumStatus.CANCELADA);
             try {
+                double valorOrdem = ordem.getQuantidadeOrdem() * ordem.getValorOrdem();
+                Optional<ClienteModel> clienteModel = clienteRepository.findById(ordem.getIdCliente());
+                clienteModel.get().setValorBloqueado(clienteModel.get().getValorBloqueado() - valorOrdem);
+                clienteModel.get().setSaldo(clienteModel.get().getSaldo() + valorOrdem);
+                clienteRepository.save(clienteModel.get());
                 ordem = ordemRepository.save(ordem);
             }catch (ObjectOptimisticLockingFailureException ex){ //Verifica se não esta sendo processada em outro lugar
                 throw new RecursoNaoAceitoException("Cancelar Ordem ", "pois esta ordem esta em conflido com processamento, tente novamente!");

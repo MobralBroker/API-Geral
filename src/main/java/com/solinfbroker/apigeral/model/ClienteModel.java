@@ -51,4 +51,8 @@ public class ClienteModel{
 
     @Column(name = "saldo")
     private double saldo;
+
+    @Column(name = "valor_bloqueado")
+    private double valorBloqueado;
+
 }
