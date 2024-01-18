@@ -83,26 +83,6 @@ $$ LANGUAGE plpgsql;
 -- Trigger associada à função, executada após uma atualização na tabela ativo
 CREATE TRIGGER after_update_ativo
 AFTER UPDATE ON ativo
+AFTER UPDATE ON ativo
 FOR EACH ROW
 EXECUTE FUNCTION after_update_ativo();
-
--- Trigger de Log para gerar Histório de Preços
--- Função que é executada após uma atualização na tabela ativo, registrando o histórico de preços
--- CREATE OR REPLACE FUNCTION after_update_ativo()
--- RETURNS TRIGGER AS $$
--- BEGIN
---     -- Verifica se o valor da coluna "valor" foi alterado
---     IF NEW.valor <> OLD.valor THEN
---         -- Insere um novo registro na tabela historico_preco
---         INSERT INTO historico_preco (id_ativo, data_valor, valor_do_ativo)
---         VALUES (OLD.id, CURRENT_DATE, OLD.valor);
---     END IF;
---     RETURN NEW;
--- END;
--- $$ LANGUAGE plpgsql;
-
--- -- Trigger associada à função, executada após uma atualização na tabela ativo
--- CREATE TRIGGER after_update_ativo
--- AFTER UPDATE ON ativo
--- FOR EACH ROW
--- EXECUTE FUNCTION after_update_ativo();
