@@ -28,4 +28,6 @@ public class AtivoController {
         return ResponseEntity.ok(ativoRepository.save(ativo));
     }
 
+    //TODO criar um método para retornar os ativos do mercado
+
 }
