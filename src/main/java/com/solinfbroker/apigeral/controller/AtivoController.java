@@ -33,7 +33,7 @@ public class AtivoController {
 
     @GetMapping("/empresa")
     private ResponseEntity listarAtivosEmpresa(@RequestParam("idEmpresa") Long id) {
-        return ResponseEntity.ok(ativoRepository.findByEmpresaId(id));
+        return ResponseEntity.ok(ativoRepository.findByEmpresaId(id));//teste
     }
     
 }
