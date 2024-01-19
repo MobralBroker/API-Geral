@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.List;
 
 
 @RestController
@@ -24,17 +25,17 @@ public class CarteiraController {
   private final CarteiraRepository carteiraRepository;
 
   @GetMapping
-  private ResponseEntity listarCarteiras(){
+  private ResponseEntity<List<CarteiraModel>> listarCarteiras(){
       return ResponseEntity.ok(carteiraRepository.findAll());
   }
   
   @GetMapping("/cliente")
-  private ResponseEntity listarCarteiraIdCliente(@RequestParam("idCliente") Long id) {
+  private ResponseEntity<List<CarteiraModel>> listarCarteiraIdCliente(@RequestParam("idCliente") Long id) {
     return ResponseEntity.ok(carteiraRepository.findByClienteId(id));
   }
   
   @PostMapping
-  private ResponseEntity criarCarteira(@RequestBody CarteiraModel carteira){
+  private ResponseEntity<CarteiraModel> criarCarteira(@RequestBody CarteiraModel carteira){
       return ResponseEntity.ok(carteiraRepository.save(carteira));
   }
 }
