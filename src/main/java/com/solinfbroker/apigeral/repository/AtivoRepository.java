@@ -10,4 +10,6 @@ import java.util.List;
 @Repository
 public interface AtivoRepository extends JpaRepository<AtivoModel,Long> {
   List<AtivoModel> findByEmpresaId(@Param("idEmpresa") Long idEmpresa);
+
+  List<AtivoModel> findBysigla(@Param("sigla") String sigla);
 }
