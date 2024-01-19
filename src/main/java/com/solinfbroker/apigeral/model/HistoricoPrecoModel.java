@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 public class HistoricoPrecoModel {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long Id;
+  private Long id;
 
   @Column(name = "id_ativo", nullable = false)
   private Long idAtivo;

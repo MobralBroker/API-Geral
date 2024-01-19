@@ -21,21 +21,20 @@ import java.util.List;
 @RequestMapping("/carteira")
 public class CarteiraController {
 
-
   private final CarteiraRepository carteiraRepository;
 
   @GetMapping
-  private ResponseEntity<List<CarteiraModel>> listarCarteiras(){
+  public ResponseEntity<List<CarteiraModel>> listarCarteiras(){
       return ResponseEntity.ok(carteiraRepository.findAll());
   }
   
   @GetMapping("/cliente")
-  private ResponseEntity<List<CarteiraModel>> listarCarteiraIdCliente(@RequestParam("idCliente") Long id) {
+  public ResponseEntity<List<CarteiraModel>> listarCarteiraIdCliente(@RequestParam("idCliente") Long id) {
     return ResponseEntity.ok(carteiraRepository.findByClienteId(id));
   }
   
   @PostMapping
-  private ResponseEntity<CarteiraModel> criarCarteira(@RequestBody CarteiraModel carteira){
+  public ResponseEntity<CarteiraModel> criarCarteira(@RequestBody CarteiraModel carteira){
       return ResponseEntity.ok(carteiraRepository.save(carteira));
   }
 }

@@ -19,7 +19,7 @@ public record OperacaoDTO(
     enumStatus statusOperacao,
     @Column(name = "tipo_ordem", nullable = false, length = 12)
     @Enumerated(EnumType.STRING)
-    enumTipoOrdem tipoOrdem //TODO adicionar um inner join
+    enumTipoOrdem tipoOrdem
 
 ) {
 }

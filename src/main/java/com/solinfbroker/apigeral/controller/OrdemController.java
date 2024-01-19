@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/ordem")
@@ -17,23 +19,23 @@ public class OrdemController {
     private final OrdemService ordemService;
 
     @GetMapping
-    private ResponseEntity listarOrdem(){
+    public ResponseEntity<List<Ordem>> listarOrdem(){
         return ResponseEntity.ok(ordemService.listarOrdem());
     }
 
     @GetMapping("/{id}")
-    private ResponseEntity<?> buscarOrdem(@PathVariable Long id){
+    public ResponseEntity<Ordem> buscarOrdem(@PathVariable Long id){
         return ordemService.buscarOrdem(id).map(ResponseEntity::ok)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Ordem", "id", id));
     }
 
     @PostMapping
-    private Ordem criarOrdem(@RequestBody @Valid OrdemDTO ordem){
+    public Ordem criarOrdem(@RequestBody @Valid OrdemDTO ordem){
         return ordemService.criarOrdem(ordem);
     }
 
     @PutMapping("/cancelar-ordem/{id}")
-    private Ordem cancelarOrdem(@RequestBody OrdemDTO ordem, @PathVariable Long id){
+    public Ordem cancelarOrdem(@RequestBody OrdemDTO ordem, @PathVariable Long id){
         return ordemService.cancelarOrdem(id);
     }
 

@@ -26,21 +26,22 @@ public class SecurityFilter extends OncePerRequestFilter{
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException{
-        var token = this.recoveryToken(request); 
+        var token = this.recoveryToken(request);
+        var tokenInvalido = "Token Inválido, refaça o login para liberar o acesso!";
             if(token != null){
                 try {
                     ResponseEntity<String> responseAuth = this.restTemplate.getForEntity(pathAutenticacao+"/auth/validar?token="+token, String.class);
                     if(responseAuth.getStatusCode().equals(HttpStatus.UNAUTHORIZED)){
-                        throw new ApiRequestException("Token Inválido, refaça o login para liberar o acesso!");
+                        throw new ApiRequestException(tokenInvalido);
                     }
                 }catch (Exception e){
                     response.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
                     response.setCharacterEncoding("UTF-8");
-                    response.getWriter().println("Token Inválido, refaça o login para liberar o acesso!");
+                    response.getWriter().println(tokenInvalido);
 
                 }
             }else{
-                throw new ApiRequestException("Token Inválido, refaça o login para liberar o acesso!");
+                throw new ApiRequestException(tokenInvalido);
             }
             filterChain.doFilter(request, response);
 

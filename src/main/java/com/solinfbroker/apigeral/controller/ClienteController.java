@@ -12,28 +12,26 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(value = "/cliente")
 public class ClienteController {
 
-
-
     private final ClienteService clienteService;
 
     @GetMapping("/{id}")
-    private ResponseEntity<?> buscarCliente(@PathVariable Long id){
+    public ResponseEntity<ClienteModel> buscarCliente(@PathVariable Long id){
         return clienteService.buscarCliente(id).map(ResponseEntity::ok)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Cliente", "id", id));
     }
 
     @PutMapping("/adicionar-saldo/{id}")
-    private ResponseEntity adicionarSaldo(@PathVariable Long id, @RequestParam(value = "valor")double valor ){
+    public ResponseEntity<ClienteModel> adicionarSaldo(@PathVariable Long id, @RequestParam(value = "valor")double valor ){
         return ResponseEntity.ok(clienteService.addSaldo(id,valor));
     }
 
     @PutMapping("/sacar-saldo/{id}")
-    private ResponseEntity sacarSaldo(@PathVariable Long id, @RequestParam(value = "valor")double valor ){
+    public ResponseEntity<ClienteModel> sacarSaldo(@PathVariable Long id, @RequestParam(value = "valor")double valor ){
         return ResponseEntity.ok(clienteService.sacarSaldo(id,valor));
     }
 
     @PutMapping("/usuario/{id}")
-    private ResponseEntity atualizarUsuario(@RequestBody ClienteModel cliente, @PathVariable Long id ){
+    public ResponseEntity<ClienteModel> atualizarUsuario(@RequestBody ClienteModel cliente, @PathVariable Long id ){
         return ResponseEntity.ok(clienteService.atualizarUsuario(cliente,id));
     }
 }
