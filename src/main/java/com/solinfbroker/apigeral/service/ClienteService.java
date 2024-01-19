@@ -4,16 +4,18 @@ import com.solinfbroker.apigeral.config.exceptions.RecursoNaoAceitoException;
 import com.solinfbroker.apigeral.config.exceptions.RecursoNaoEncontradoException;
 import com.solinfbroker.apigeral.model.ClienteModel;
 import com.solinfbroker.apigeral.repository.ClienteRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class ClienteService {
 
-    @Autowired
-    ClienteRepository clienteRepository;
+
+    private final ClienteRepository clienteRepository;
 
     public Optional<ClienteModel> buscarCliente(Long id){
         return clienteRepository.findById(id);

@@ -3,6 +3,7 @@ package com.solinfbroker.apigeral.controller;
 import com.solinfbroker.apigeral.model.AtivoModel;
 import com.solinfbroker.apigeral.model.EmpresaModel;
 import com.solinfbroker.apigeral.repository.EmpresaRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,11 +12,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping(value = "/empresa")
 public class EmpresaController {
 
-    @Autowired
-    EmpresaRepository empresaRepository;
+    private final EmpresaRepository empresaRepository;
 
     @GetMapping
     private ResponseEntity listarEmpresa(){

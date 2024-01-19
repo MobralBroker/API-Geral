@@ -3,19 +3,21 @@ package com.solinfbroker.apigeral.controller;
 import com.solinfbroker.apigeral.config.exceptions.RecursoNaoEncontradoException;
 import com.solinfbroker.apigeral.model.ClienteModel;
 import com.solinfbroker.apigeral.service.ClienteService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping(value = "/cliente")
 public class ClienteController {
 
 //    @Autowired
 //    private KafkaProducerMessage kafkaProducerMessage;
 
-    @Autowired
-    ClienteService clienteService;
+
+    private final ClienteService clienteService;
 
     @GetMapping("/{id}")
     private ResponseEntity<?> buscarCliente(@PathVariable Long id){
