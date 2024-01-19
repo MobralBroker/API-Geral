@@ -3,10 +3,12 @@ package com.solinfbroker.apigeral.repository;
 import com.solinfbroker.apigeral.model.Operacao;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 import java.util.Set;
 
+@Repository
 public interface OperacaoRepository extends JpaRepository<Operacao,Long> {
 
 //    @Query(value = "select op.id,op.quantidade,op.data_execucao ,op.status_operacao ,ord.tipo_ordem " +

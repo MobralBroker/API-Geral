@@ -5,15 +5,17 @@ import com.solinfbroker.apigeral.dtos.OrdemDTO;
 import com.solinfbroker.apigeral.model.Ordem;
 import com.solinfbroker.apigeral.service.OrdemService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/ordem")
 public class OrdemController {
-    @Autowired
-    OrdemService ordemService;
+
+    private final OrdemService ordemService;
 
     @GetMapping
     private ResponseEntity listarOrdem(){
