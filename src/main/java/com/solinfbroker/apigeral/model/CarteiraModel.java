@@ -35,7 +35,7 @@ public class CarteiraModel {
   @JoinColumn(name = "id_cliente", referencedColumnName = "id", insertable = false, updatable = false)
   private ClienteModel cliente;
 
-  @OneToMany
+  @OneToOne
   @JoinColumn(name = "id_ativo", referencedColumnName = "id", insertable = false, updatable = false)
-  private List<AtivoModel> ativo;
+  private AtivoModel ativo;
 }
