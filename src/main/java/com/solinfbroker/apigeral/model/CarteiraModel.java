@@ -1,13 +1,11 @@
 package com.solinfbroker.apigeral.model;
 
-import java.time.LocalDate;
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
-
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import java.time.LocalDate;
 
 @Entity
 @Data
@@ -35,7 +33,7 @@ public class CarteiraModel {
   @JoinColumn(name = "id_cliente", referencedColumnName = "id", insertable = false, updatable = false)
   private ClienteModel cliente;
 
-  @OneToMany
+  @OneToOne
   @JoinColumn(name = "id_ativo", referencedColumnName = "id", insertable = false, updatable = false)
-  private List<AtivoModel> ativo;
+  private AtivoModel ativo;
 }
