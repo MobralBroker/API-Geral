@@ -10,7 +10,6 @@ import com.solinfbroker.apigeral.model.CarteiraModel;
 import com.solinfbroker.apigeral.repository.CarteiraRepository;
 
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,18 +25,17 @@ public class CarteiraController {
   private final CarteiraRepository carteiraRepository;
 
   @GetMapping
-  private ResponseEntity listarAtivos(){
+  private ResponseEntity listarCarteiras(){
       return ResponseEntity.ok(carteiraRepository.findAll());
   }
   
-
-  // @GetMapping("/{id}")
-  // private ResponseEntity buscarAtivo(@PathVariable Long id){
-  //     return ResponseEntity.ok(carteiraRepository.findById(id));
-  // }  
-  // @PostMapping
-  // private ResponseEntity criarCarteira(@RequestBody CarteiraModel carteira){
-  //   return ResponseEntity.ok(carteiraRepository.save(carteira));
-  // }
+  @GetMapping("/cliente")
+  private ResponseEntity listarCarteiraIdCliente(@RequestParam("idCliente") Long id) {
+    return ResponseEntity.ok(carteiraRepository.findByClienteId(id));
+  }
   
+  @PostMapping
+  private ResponseEntity criarCarteira(@RequestBody CarteiraModel carteira){
+      return ResponseEntity.ok(carteiraRepository.save(carteira));
+  }
 }
