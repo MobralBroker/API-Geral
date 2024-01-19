@@ -13,8 +13,8 @@ import java.util.HashMap;
 
 @Configuration
 public class KafkaAdminConfig {
-    @Autowired
-    private KafkaProperties properties;
+
+    private final KafkaProperties properties;
 
     @Bean
     public KafkaAdmin kafkaAdmin() {

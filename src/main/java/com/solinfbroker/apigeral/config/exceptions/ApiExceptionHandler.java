@@ -14,8 +14,8 @@ import java.time.LocalDateTime;
 @ControllerAdvice
 public class ApiExceptionHandler {
 
-    @Autowired
-    MessageSource messageSource;
+    
+    private final MessageSource messageSource;
     @ExceptionHandler(value = {ApiRequestException.class})
     public ResponseEntity<Object> handleApiRequestException(ApiRequestException apiRequestException){
         ApiException apiException = new ApiException(
@@ -23,21 +23,20 @@ public class ApiExceptionHandler {
                 HttpStatus.BAD_REQUEST,
                 LocalDateTime.now()
         );
-        System.out.println("12121212");
         return new ResponseEntity<>(apiException, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(RecursoNaoEncontradoException.class)
-    public ResponseEntity<?> handleResourceNotFoundException(RecursoNaoEncontradoException ex) {
+    public ResponseEntity<String> handleResourceNotFoundException(RecursoNaoEncontradoException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
 
     @ExceptionHandler(RecursoNaoAceitoException.class)
-    public ResponseEntity<?> handleResourceNotFoundException(RecursoNaoAceitoException ex) {
+    public ResponseEntity<String> handleResourceNotFoundException(RecursoNaoAceitoException ex) {
         return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(ex.getMessage());
     }
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<?> handleConstraintViolationException(MethodArgumentNotValidException ex) {
+    public ResponseEntity<String> handleConstraintViolationException(MethodArgumentNotValidException ex) {
         ApiException apiException = new ApiException();
         ex.getBindingResult().getFieldErrors().forEach( e -> {
             String mensagem = e.getField().concat(" ").concat(messageSource.getMessage(e, LocaleContextHolder.getLocale()));

@@ -11,11 +11,9 @@ public class KafkaProducerMessage {
 
     private final Logger LOG = LoggerFactory.getLogger(KafkaProducerMessage.class);
 
-    @Autowired
-    private KafkaAdminConfig kafkaAdminConfig;
+    private final KafkaAdminConfig kafkaAdminConfig;
 
-    @Autowired
-    private KafkaTemplate<String, Object> kafkaTemplate;
+    private final KafkaTemplate<String, Object> kafkaTemplate;
 
     public void sendMessage(Object message, String topic){
         LOG.info("PRODUCER sent with Kafka ::: {}", message);
