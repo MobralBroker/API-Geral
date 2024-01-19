@@ -6,7 +6,6 @@ import com.solinfbroker.apigeral.model.Ordem;
 import com.solinfbroker.apigeral.service.OrdemService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

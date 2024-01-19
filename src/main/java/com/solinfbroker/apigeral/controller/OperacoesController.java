@@ -3,7 +3,6 @@ package com.solinfbroker.apigeral.controller;
 import com.solinfbroker.apigeral.model.*;
 import com.solinfbroker.apigeral.repository.OperacaoRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
