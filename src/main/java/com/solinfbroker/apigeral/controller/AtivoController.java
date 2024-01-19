@@ -35,6 +35,7 @@ public class AtivoController {
     @GetMapping("/empresa")
     public ResponseEntity<List<AtivoModel>> listarAtivosEmpresa(@RequestParam("idEmpresa") Long id) {
         return ResponseEntity.ok(ativoRepository.findByEmpresaId(id));
+    }
 
     @GetMapping("/sigla")
     private ResponseEntity<List<AtivoModel>> listarAtivosSigla(@RequestParam("sigla") String sigla) {
