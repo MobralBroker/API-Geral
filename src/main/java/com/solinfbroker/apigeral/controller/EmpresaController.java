@@ -6,6 +6,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.Optional;
+
 
 @RestController
 @RequiredArgsConstructor
@@ -15,17 +18,17 @@ public class EmpresaController {
     private final EmpresaRepository empresaRepository;
 
     @GetMapping
-    private ResponseEntity listarEmpresa(){
+    public ResponseEntity<List<EmpresaModel>> listarEmpresa(){
         return ResponseEntity.ok(empresaRepository.findAll());
     }
 
     @GetMapping("/{id}")
-    private ResponseEntity buscarEmpresa(@PathVariable Long id){
+    public ResponseEntity<Optional<EmpresaModel>> buscarEmpresa(@PathVariable Long id){
         return ResponseEntity.ok(empresaRepository.findById(id));
     }
 
     @PostMapping
-    private ResponseEntity criarEmpresa(@RequestBody EmpresaModel empresaModel){
+    public ResponseEntity<EmpresaModel> criarEmpresa(@RequestBody EmpresaModel empresaModel){
         return ResponseEntity.ok(empresaRepository.save(empresaModel));
     }
   

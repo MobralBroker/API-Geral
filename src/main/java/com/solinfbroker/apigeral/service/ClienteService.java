@@ -22,7 +22,7 @@ public class ClienteService {
 
     public ClienteModel addSaldo(Long id, double valor){
         Optional<ClienteModel> cliente = clienteRepository.findById(id);
-        ClienteModel clienteSalvo = new ClienteModel();
+        ClienteModel clienteSalvo;
         if(cliente.isPresent()){
             cliente.get().setSaldo(cliente.get().getSaldo()+valor);
             clienteSalvo = clienteRepository.save(cliente.get());
@@ -34,7 +34,7 @@ public class ClienteService {
 
     public ClienteModel sacarSaldo(Long id, double valor){
         Optional<ClienteModel> cliente = clienteRepository.findById(id);
-        ClienteModel clienteSalvo = new ClienteModel();
+        ClienteModel clienteSalvo;
         if(cliente.isPresent()){
             if(cliente.get().getSaldo() >= valor){
                 cliente.get().setSaldo(cliente.get().getSaldo()-valor);
@@ -50,7 +50,7 @@ public class ClienteService {
 
     public ClienteModel atualizarUsuario(ClienteModel clienteModel, Long id){
         Optional<ClienteModel> cliente = clienteRepository.findById(id);
-        ClienteModel clienteSalvo = new ClienteModel();
+        ClienteModel clienteSalvo;
         if(cliente.isPresent()){
                 cliente.get().setNomeUsuario(clienteModel.getNomeUsuario());
                 cliente.get().setEmail(clienteModel.getEmail());

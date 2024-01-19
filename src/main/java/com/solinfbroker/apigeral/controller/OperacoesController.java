@@ -6,6 +6,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.Optional;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/operacao")
@@ -14,16 +17,16 @@ public class OperacoesController {
     private final OperacaoRepository operacaoRepository;
 
     @GetMapping("/operacao")
-    private ResponseEntity listarOperacao(){
+    public ResponseEntity<List<Operacao>> listarOperacao(){
         return ResponseEntity.ok(operacaoRepository.findAll());
     }
 
     @GetMapping("/operacao/{id}")
-    private ResponseEntity buscarOperacao(@PathVariable Long id){
+    public ResponseEntity<Optional<Operacao>> buscarOperacao(@PathVariable Long id){
         return ResponseEntity.ok(operacaoRepository.findById(id));
     }
     @PostMapping
-    private ResponseEntity criarOperacao(@RequestBody Operacao op){
+    public ResponseEntity<Operacao> criarOperacao(@RequestBody Operacao op){
         return ResponseEntity.ok(operacaoRepository.save(op));
     }
 }
