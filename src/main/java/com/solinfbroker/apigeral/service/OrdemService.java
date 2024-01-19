@@ -20,7 +20,6 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -50,8 +49,7 @@ public class OrdemService {
                                         enumStatus.valueOf((String) result.get()[3]),
                                         enumTipoOrdem.valueOf((String) result.get()[4]))
 
-                        )
-                        .collect(Collectors.toList());
+                        ).toList();
                 ordem.get().setOperacoes(operacoes);
             }else{
                 List<OperacaoDTO> operacoes = operacaoRepository.findByIdCompra(ordem.get().getId()) // Atribui as operações de compra que pertence a esta ordem
@@ -62,8 +60,7 @@ public class OrdemService {
                                 ((Timestamp)result[2]).toLocalDateTime(),
                                 enumStatus.valueOf((String)result[3]),
                                 enumTipoOrdem.valueOf((String)result[4])
-                        ))
-                        .collect(Collectors.toList());
+                        )).toList();
                 ordem.get().setOperacoes(operacoes);
             }
 
@@ -108,52 +105,30 @@ public class OrdemService {
     }
 
     public Ordem cancelarOrdem(Long id){
-        Ordem ordem = ordemRepository.findById(id).get();
-        if(ordem.getStatusOrdem().equals(enumStatus.EXECUTADA)){
-            throw new RecursoNaoAceitoException("Cancelar Ordem ", "pois esta ordem já foi executada");
-        }else{
-            ordem.setStatusOrdem(enumStatus.CANCELADA);
-            try {
-                double valorOrdem = ordem.getQuantidadeOrdem() * ordem.getValorOrdem();
-                Optional<ClienteModel> clienteModel = clienteRepository.findById(ordem.getIdCliente());
-                clienteModel.get().setValorBloqueado(clienteModel.get().getValorBloqueado() - valorOrdem);
-                clienteModel.get().setSaldo(clienteModel.get().getSaldo() + valorOrdem);
-                clienteRepository.save(clienteModel.get());
-                ordem = ordemRepository.save(ordem);
-            }catch (ObjectOptimisticLockingFailureException ex){ //Verifica se não esta sendo processada em outro lugar
-                throw new RecursoNaoAceitoException("Cancelar Ordem ", "pois esta ordem esta em conflido com processamento, tente novamente!");
+        Optional<Ordem> ordem = ordemRepository.findById(id);
+        Ordem ordemSalva =new Ordem();
+        if (ordem.isPresent()){
+            if(ordem.get().getStatusOrdem().equals(enumStatus.EXECUTADA)){
+                throw new RecursoNaoAceitoException("Cancelar Ordem ", "pois esta ordem já foi executada");
+            }else{
+                ordem.get().setStatusOrdem(enumStatus.CANCELADA);
+                try {
+                    double valorOrdem = ordem.get().getQuantidadeOrdem() * ordem.get().getValorOrdem();
+                    Optional<ClienteModel> clienteModel = clienteRepository.findById(ordem.get().getIdCliente());
+                    if(clienteModel.isPresent()){
+                        clienteModel.get().setValorBloqueado(clienteModel.get().getValorBloqueado() - valorOrdem);
+                        clienteModel.get().setSaldo(clienteModel.get().getSaldo() + valorOrdem);
+                        clienteRepository.save(clienteModel.get());
+                    }
+                    ordemSalva = ordemRepository.save(ordem.get());
+                }catch (ObjectOptimisticLockingFailureException ex){ //Verifica se não esta sendo processada em outro lugar
+                    throw new RecursoNaoAceitoException("Cancelar Ordem ", "pois esta ordem esta em conflido com processamento, tente novamente!");
+                }
             }
-        }
-//            testarConcorrencia(id);
-        return ordem;
-    }
 
-//    public void testarConcorrencia(Long id) {
-//
-//        // Thread 1
-//        new Thread(() -> {
-//            Ordem ordem = ordemRepository.findById(id).get();
-//            try {
-//                Thread.sleep(2000);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//            ordem.setStatusOrdem(enumStatus.CANCELADA);
-//            try {
-//            ordemRepository.save(ordem);
-//        }catch (ObjectOptimisticLockingFailureException ex){
-//            System.out.println("opa");
-//            throw new RecursoNaoAceitoException("Cancelar Ordem ", "pois esta ordem já foi processada");
-//        }
-//        }).start();
-//
-//        // Thread 2
-//        new Thread(() -> {
-//            Ordem ordem = ordemRepository.findById(id).get();
-//            ordem.setStatusOrdem(enumStatus.EXECUTADA);
-//            ordemRepository.save(ordem);
-//        }).start();
-//    }
+        }
+        return ordemSalva;
+    }
 
 
 

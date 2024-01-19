@@ -6,8 +6,9 @@ import com.solinfbroker.apigeral.repository.AtivoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
+import java.util.Optional;
 
 
 @RestController
@@ -18,26 +19,25 @@ public class AtivoController {
     private final AtivoRepository ativoRepository;
 
     @GetMapping
-    private ResponseEntity listarAtivos(){
+    public ResponseEntity<List<AtivoModel>> listarAtivos(){
         return ResponseEntity.ok(ativoRepository.findAll());
     }
 
     @GetMapping("/{id}")
-    private ResponseEntity buscarAtivo(@PathVariable Long id){
+    public ResponseEntity<Optional<AtivoModel>> buscarAtivo(@PathVariable Long id){
         return ResponseEntity.ok(ativoRepository.findById(id));
     }
     @PostMapping
-    private ResponseEntity criarAtivo(@RequestBody AtivoModel ativo){
+    public ResponseEntity<AtivoModel> criarAtivo(@RequestBody AtivoModel ativo){
         return ResponseEntity.ok(ativoRepository.save(ativo));
     }
 
     @GetMapping("/empresa")
-    private ResponseEntity listarAtivosEmpresa(@RequestParam("idEmpresa") Long id) {
-        return ResponseEntity.ok(ativoRepository.findByEmpresaId(id));//teste
-    }
+    public ResponseEntity<List<AtivoModel>> listarAtivosEmpresa(@RequestParam("idEmpresa") Long id) {
+        return ResponseEntity.ok(ativoRepository.findByEmpresaId(id));
 
     @GetMapping("/sigla")
-    private ResponseEntity listarAtivosSigla(@RequestParam("sigla") String sigla) {
+    private ResponseEntity<List<AtivoModel>> listarAtivosSigla(@RequestParam("sigla") String sigla) {
         return ResponseEntity.ok(ativoRepository.findBysigla(sigla));
     }
     
