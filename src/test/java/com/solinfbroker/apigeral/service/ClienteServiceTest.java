@@ -214,7 +214,7 @@ class ClienteServiceTest {
         ClienteModel clienteMock = mock(ClienteModel.class);
         Optional<ClienteModel> clienteOpt = Optional.of(clienteMock);
 
-        when(clienteRepository.findById(any())).thenReturn(clienteOpt);
+        when(clienteRepository.findById(any())).thenReturn(Optional.empty());
 
         assertThrows(RecursoNaoEncontradoException.class, () -> {
             clienteService.atualizarUsuario(clienteMock, clienteOpt.get().getId());
