@@ -23,6 +23,9 @@ public class ClienteService {
     public ClienteModel addSaldo(Long id, double valor){
         Optional<ClienteModel> cliente = clienteRepository.findById(id);
         ClienteModel clienteSalvo;
+        if(valor < 0){
+            throw new RecursoNaoAceitoException("valor do saldo ", "precisa ser um valor acima de R$ 0,00");
+        }
         if(cliente.isPresent()){
             cliente.get().setSaldo(cliente.get().getSaldo()+valor);
             clienteSalvo = clienteRepository.save(cliente.get());
@@ -61,3 +64,28 @@ public class ClienteService {
         return clienteSalvo;
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
