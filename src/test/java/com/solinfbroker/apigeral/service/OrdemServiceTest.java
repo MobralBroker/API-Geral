@@ -7,6 +7,7 @@ import com.solinfbroker.apigeral.model.Ordem;
 import com.solinfbroker.apigeral.model.enumStatus;
 import com.solinfbroker.apigeral.model.enumTipoOrdem;
 import com.solinfbroker.apigeral.repository.ClienteRepository;
+import com.solinfbroker.apigeral.repository.OperacaoRepository;
 import com.solinfbroker.apigeral.repository.OrdemRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,9 +16,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -31,6 +30,8 @@ class OrdemServiceTest {
     @Mock
     private OrdemRepository ordemRepository;
 
+    @Mock
+    private OperacaoRepository operacaoRepository;
     @Mock
     private ClienteRepository clienteRepository;
     @InjectMocks
@@ -53,33 +54,29 @@ class OrdemServiceTest {
         assertEquals(1, listaRetornada.size());
     }
 
+
     @Test
-    void testListarOrdemErro() {
-        List<Ordem> listaFake = Arrays.asList(
-                new Ordem()
-        );
+    void testBuscarOrdemSucessoCompra() {
+        Ordem ordemMock = mock(Ordem.class);
+        Optional<Ordem> ordemOpt = Optional.of(ordemMock);
 
-        // Configura o mock para retornar a lista fake
-        when(ordemRepository.findAll()).thenReturn(listaFake);
 
-        // Chama o método que você está testando
-        List<Ordem> listaRetornada = ordemService.listarOrdem();
 
-        // Asserts para verificar se a lista retornada é a esperada
-        assertNotNull(listaRetornada);
-        assertNotEquals(0, listaRetornada.size());
+        when(ordemRepository.findById(1L)).thenReturn(ordemOpt);
+        when(ordemOpt.get().getTipoOrdem()).thenReturn(enumTipoOrdem.ORDEM_COMPRA);
+
+        assertThat(ordemService.buscarOrdem(1L)).isPresent();
+
     }
 
     @Test
-    void testBuscarOrdemSucesso() {
-        List<Ordem> listaFake = Arrays.asList(
-                new Ordem()
-        );
+    void testBuscarOrdemSucessoVenda() {
+        Ordem ordemMock = mock(Ordem.class);
+        Optional<Ordem> ordemOpt = Optional.of(ordemMock);
+        when(ordemRepository.findById(1L)).thenReturn(ordemOpt);
+        when(ordemOpt.get().getTipoOrdem()).thenReturn(enumTipoOrdem.ORDEM_VENDA);
 
-        // Configura o mock para retornar a lista fake
-        when(ordemRepository.findById(listaFake.get(0).getId())).thenReturn(Optional.ofNullable(listaFake.get(0)));
-
-
+        assertThat(ordemService.buscarOrdem(1L)).isPresent();
 
     }
     @Test
