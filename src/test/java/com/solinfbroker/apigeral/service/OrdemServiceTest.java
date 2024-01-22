@@ -16,7 +16,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -128,19 +130,33 @@ class OrdemServiceTest {
     }
 
     @Test
-    void testCancelarOrdemException() {
+    void testCancelarOrdemSemSucessoOrdemJaExecutada() {
         Ordem ordem = mock(Ordem.class);
         Optional<Ordem> ordemOpt = Optional.of(ordem);
 
         when(ordemRepository.findById(1L)).thenReturn(ordemOpt);
         when(ordem.getStatusOrdem()).thenReturn(enumStatus.EXECUTADA);
-        assertThat(ordemService.cancelarOrdem(1L)).isNotNull();
-        when(ordemRepository.findById(1L)).thenReturn(Optional.of(ordem));
 
         assertThrows(RecursoNaoAceitoException.class, () -> {
             ordemService.cancelarOrdem(1L);
         });
     }
+
+    @Test
+    void testCancelarOrdemComSucesso() {
+        Ordem ordem = mock(Ordem.class);
+        Optional<Ordem> ordemOpt = Optional.of(ordem);
+        ClienteModel cliente = mock(ClienteModel.class);
+        Optional<ClienteModel> clienteOpt = Optional.of(cliente);
+
+        when(ordemRepository.findById(1L)).thenReturn(ordemOpt);
+        when(ordem.getStatusOrdem()).thenReturn(enumStatus.ABERTA);
+        when(ordem.getIdCliente()).thenReturn(1L);
+        when(clienteRepository.findById(1L)).thenReturn(clienteOpt);
+        when(ordemRepository.save(ordem)).thenReturn(ordem);
+        assertThat(ordemService.cancelarOrdem(1L));
+    }
+
 }
 
 
