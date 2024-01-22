@@ -28,6 +28,14 @@ public class OrdemController {
         return ordemService.buscarOrdem(id).map(ResponseEntity::ok)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Ordem", "id", id));
     }
+    @GetMapping("/cliente/{id}")
+    public ResponseEntity<List<Ordem>> buscarOrdemCliente(@PathVariable Long id){
+        List<Ordem> ordens = ordemService.buscarOrdemCliente(id);
+        if(ordens.isEmpty()){
+            throw new RecursoNaoEncontradoException("Ordem", "id do cliente ", id);
+        }
+        return ResponseEntity.ok(ordens);
+    }
 
     @PostMapping
     public Ordem criarOrdem(@RequestBody @Valid OrdemDTO ordem){
