@@ -154,7 +154,9 @@ public class OrdemService {
                     Optional<ClienteModel> clienteModel = clienteRepository.findById(ordem.get().getIdCliente());
                     if(clienteModel.isPresent()){
                         clienteModel.get().setValorBloqueado(clienteModel.get().getValorBloqueado() - valorOrdem);
-                        clienteModel.get().setSaldo(clienteModel.get().getSaldo() + valorOrdem);
+                        if(ordem.get().getTipoOrdem().equals(enumTipoOrdem.ORDEM_COMPRA)){
+                            clienteModel.get().setSaldo(clienteModel.get().getSaldo() + valorOrdem);
+                        }
                         clienteRepository.save(clienteModel.get());
                     }
                     ordemSalva = ordemRepository.save(ordem.get());
