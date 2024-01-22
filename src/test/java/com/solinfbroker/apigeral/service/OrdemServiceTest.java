@@ -4,6 +4,7 @@ import com.solinfbroker.apigeral.config.exceptions.RecursoNaoAceitoException;
 import com.solinfbroker.apigeral.dtos.OrdemDTO;
 import com.solinfbroker.apigeral.model.ClienteModel;
 import com.solinfbroker.apigeral.model.Ordem;
+import com.solinfbroker.apigeral.model.enumStatus;
 import com.solinfbroker.apigeral.model.enumTipoOrdem;
 import com.solinfbroker.apigeral.repository.ClienteRepository;
 import com.solinfbroker.apigeral.repository.OrdemRepository;
@@ -81,11 +82,6 @@ class OrdemServiceTest {
 
 
     }
-
-    @Test
-    void testBuscarOrdemErro() {
-    }
-
     @Test
     void testCriarOrdemSucesso() {
         OrdemDTO ordem = mock(OrdemDTO.class);
@@ -103,7 +99,7 @@ class OrdemServiceTest {
     }
 
     @Test
-    void testCriarOrdemErro() {
+    void testCriarOrdemException() {
         OrdemDTO ordem = mock(OrdemDTO.class);
         ClienteModel clienteMock = mock(ClienteModel.class);
         Optional<ClienteModel> clienteOpt = Optional.of(clienteMock);
@@ -120,11 +116,64 @@ class OrdemServiceTest {
     }
 
     @Test
-    void testCancelarOrdemSucesso() {
+    void testCriarOrdemErro() {
+        OrdemDTO ordem = mock(OrdemDTO.class);
+        ClienteModel clienteMock = mock(ClienteModel.class);
+        Optional<ClienteModel> clienteOpt = Optional.of(clienteMock);
 
+        when(ordem.tipoOrdem()).thenReturn(enumTipoOrdem.ORDEM_VENDA);
+        when(clienteRepository.findById(any())).thenReturn(clienteOpt);
+        when(ordem.valorOrdem()).thenReturn(2.0);
+        when(ordem.quantidadeOrdem()).thenReturn(2);
+        when(ordemRepository.save(any())).thenReturn(new Ordem());
+
+        assertThat(ordemService.criarOrdem(ordem)).isNotNull();
     }
 
     @Test
-    void testCancelarOrdemErro() {
+    void testCancelarOrdemException() {
+        Ordem ordem = mock(Ordem.class);
+        ClienteModel clienteMock = mock(ClienteModel.class);
+        Optional<ClienteModel> clienteOpt = Optional.of(clienteMock);
+
+
+        when(ordem.getStatusOrdem()).thenReturn(enumStatus.EXECUTADA);
+        when(clienteRepository.findById(any())).thenReturn(clienteOpt);
+
+
+
+        assertThrows(RecursoNaoAceitoException.class, () -> {
+            ordemService.cancelarOrdem(clienteMock.getId());
+        });
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
