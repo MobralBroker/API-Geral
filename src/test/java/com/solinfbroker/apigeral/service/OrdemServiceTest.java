@@ -154,7 +154,7 @@ class OrdemServiceTest {
         when(ordem.getIdCliente()).thenReturn(1L);
         when(clienteRepository.findById(1L)).thenReturn(clienteOpt);
         when(ordemRepository.save(ordem)).thenReturn(ordem);
-        assertThat(ordemService.cancelarOrdem(1L));
+        assertThat(ordemService.cancelarOrdem(1L)).isNotNull();
     }
 
 }
