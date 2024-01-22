@@ -68,7 +68,43 @@ public class OrdemService {
         return ordem; //retorna ordem para o controller
     }
 
+    public List<Ordem> buscarOrdemCliente(Long id){
+        List<Ordem> ordemList =ordemRepository.findByIdCliente(id); // Busca da Ordem
+        if(!ordemList.isEmpty()){ // Verifica se possui a ordem com este ID
+            for ( Ordem ordem : ordemList){
+                if(ordem.getTipoOrdem().equals(enumTipoOrdem.ORDEM_VENDA)){ // Verica se é Venda ou compra
+                    List<OperacaoDTO> operacoes = operacaoRepository.findByIdVenda(ordem.getId())// Atribui as operações de venda que pertence a esta ordem
 
+                            .stream()
+                            .filter(Optional::isPresent)
+                            .map(result ->
+                                    new OperacaoDTO(
+                                            ((BigInteger) result.get()[0]).longValue(),
+                                            (Integer) result.get()[1],
+                                            ((Timestamp) result.get()[2]).toLocalDateTime(),
+                                            enumStatus.valueOf((String) result.get()[3]),
+                                            enumTipoOrdem.valueOf((String) result.get()[4]))
+
+                            ).toList();
+                    ordem.setOperacoes(operacoes);
+                }else{
+                    List<OperacaoDTO> operacoes = operacaoRepository.findByIdCompra(ordem.getId()) // Atribui as operações de compra que pertence a esta ordem
+                            .stream()
+                            .map(result -> new OperacaoDTO(
+                                    (Long) result[0],
+                                    (Integer)result[1],
+                                    ((Timestamp)result[2]).toLocalDateTime(),
+                                    enumStatus.valueOf((String)result[3]),
+                                    enumTipoOrdem.valueOf((String)result[4])
+                            )).toList();
+                    ordem.setOperacoes(operacoes);
+                }
+
+            }
+
+        }
+        return ordemList; //retorna ordem para o controller
+    }
     public Ordem criarOrdem(OrdemDTO ordem){
         Optional<ClienteModel> cliente = clienteRepository.findById(ordem.idCliente()); // busca o Cliente que esta fazendo a ordem
         double valorOrdem = ordem.quantidadeOrdem() * ordem.valorOrdem();

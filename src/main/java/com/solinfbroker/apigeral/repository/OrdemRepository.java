@@ -10,4 +10,6 @@ import java.util.List;
 public interface OrdemRepository extends JpaRepository<Ordem,Long> {
 
     List<Ordem> findByTipoOrdem(enumTipoOrdem tipo);
+
+    List<Ordem> findByIdCliente(Long idCliente);
 }
