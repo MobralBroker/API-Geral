@@ -2,6 +2,7 @@ package com.solinfbroker.apigeral.controller;
 
 import com.solinfbroker.apigeral.model.EmpresaModel;
 import com.solinfbroker.apigeral.repository.EmpresaRepository;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +29,7 @@ public class EmpresaController {
     }
 
     @PostMapping
-    public ResponseEntity<EmpresaModel> criarEmpresa(@RequestBody EmpresaModel empresaModel){
+    public ResponseEntity<EmpresaModel> criarEmpresa(@RequestBody @Valid EmpresaModel empresaModel){
         return ResponseEntity.ok(empresaRepository.save(empresaModel));
     }
   
