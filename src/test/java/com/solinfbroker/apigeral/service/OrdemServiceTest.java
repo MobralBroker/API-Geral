@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -96,6 +97,9 @@ class OrdemServiceTest {
         when(clienteMock.getSaldo()).thenReturn(10.0);
         when(ordem.valorOrdem()).thenReturn(2.0);
         when(ordem.quantidadeOrdem()).thenReturn(2);
+        when(ordemRepository.save(any())).thenReturn(new Ordem());
+
+        assertThat(ordemService.criarOrdem(ordem)).isNotNull();
     }
 
     @Test
