@@ -172,8 +172,6 @@ class ClienteServiceTest {
 
         when(clienteRepository.findById(any())).thenReturn(clienteOpt);
         when(clienteMock.getSaldo()).thenReturn(1.0);
-        when(clienteMock.getId()).thenReturn(1L);
-
         assertThrows(RecursoNaoAceitoException.class, () -> {
             clienteService.sacarSaldo(1L, 50.0);
         });
