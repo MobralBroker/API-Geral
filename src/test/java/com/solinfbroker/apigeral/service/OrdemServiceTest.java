@@ -130,16 +130,15 @@ class OrdemServiceTest {
     @Test
     void testCancelarOrdemException() {
         Ordem ordem = mock(Ordem.class);
-        ClienteModel clienteMock = mock(ClienteModel.class);
-        Optional<ClienteModel> clienteOpt = Optional.of(clienteMock);
+        Optional<Ordem> ordemOpt = Optional.of(ordem);
 
-        when(clienteRepository.findById(any())).thenReturn(clienteOpt);
+        when(ordemRepository.findById(1L)).thenReturn(ordemOpt);
         when(ordem.getStatusOrdem()).thenReturn(enumStatus.EXECUTADA);
-        assertThat(ordemService.cancelarOrdem(clienteMock.getId())).isNotNull();
-        when(ordemRepository.findById(clienteMock.getId())).thenReturn(Optional.of(ordem));
+        assertThat(ordemService.cancelarOrdem(1L)).isNotNull();
+        when(ordemRepository.findById(1L)).thenReturn(Optional.of(ordem));
 
         assertThrows(RecursoNaoAceitoException.class, () -> {
-            ordemService.cancelarOrdem(clienteMock.getId());
+            ordemService.cancelarOrdem(1L);
         });
     }
 }
