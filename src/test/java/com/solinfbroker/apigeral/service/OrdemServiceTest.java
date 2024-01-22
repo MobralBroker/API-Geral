@@ -35,9 +35,6 @@ class OrdemServiceTest {
 
     @Test
     void testListarOrdemSucesso() {
-        // Inicializa os mocks
-        MockitoAnnotations.openMocks(this);
-
         List<Ordem> listaFake = Arrays.asList(
                 new Ordem()
         );
@@ -55,9 +52,6 @@ class OrdemServiceTest {
 
     @Test
     void testListarOrdemErro() {
-        // Inicializa os mocks
-        MockitoAnnotations.openMocks(this);
-
         List<Ordem> listaFake = Arrays.asList(
                 new Ordem()
         );
@@ -75,6 +69,15 @@ class OrdemServiceTest {
 
     @Test
     void testBuscarOrdemSucesso() {
+        List<Ordem> listaFake = Arrays.asList(
+                new Ordem()
+        );
+
+        // Configura o mock para retornar a lista fake
+        when(ordemRepository.findById(listaFake.get(0).getId())).thenReturn(Optional.ofNullable(listaFake.get(0)));
+
+
+
     }
 
     @Test
@@ -83,11 +86,19 @@ class OrdemServiceTest {
 
     @Test
     void testCriarOrdemSucesso() {
+        OrdemDTO ordem = mock(OrdemDTO.class);
+        ClienteModel clienteMock = mock(ClienteModel.class);
+        Optional<ClienteModel> clienteOpt = Optional.of(clienteMock);
+
+        when(ordem.tipoOrdem()).thenReturn(enumTipoOrdem.ORDEM_COMPRA);
+        when(clienteRepository.findById(any())).thenReturn(clienteOpt);
+        when(clienteMock.getSaldo()).thenReturn(10.0);
+        when(ordem.valorOrdem()).thenReturn(2.0);
+        when(ordem.quantidadeOrdem()).thenReturn(2);
     }
 
     @Test
     void testCriarOrdemErro() {
-
         OrdemDTO ordem = mock(OrdemDTO.class);
         ClienteModel clienteMock = mock(ClienteModel.class);
         Optional<ClienteModel> clienteOpt = Optional.of(clienteMock);
