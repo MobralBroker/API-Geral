@@ -136,11 +136,10 @@ class OrdemServiceTest {
         ClienteModel clienteMock = mock(ClienteModel.class);
         Optional<ClienteModel> clienteOpt = Optional.of(clienteMock);
 
-
-        when(ordem.getStatusOrdem()).thenReturn(enumStatus.EXECUTADA);
         when(clienteRepository.findById(any())).thenReturn(clienteOpt);
-
-
+        when(ordem.getStatusOrdem()).thenReturn(enumStatus.EXECUTADA);
+        assertThat(ordemService.cancelarOrdem(clienteMock.getId())).isNotNull();
+        when(ordemRepository.findById(clienteMock.getId())).thenReturn(Optional.of(ordem));
 
         assertThrows(RecursoNaoAceitoException.class, () -> {
             ordemService.cancelarOrdem(clienteMock.getId());
