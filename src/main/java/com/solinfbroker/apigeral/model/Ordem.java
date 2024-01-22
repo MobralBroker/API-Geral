@@ -68,4 +68,8 @@ public class Ordem {
     @Nullable
     private List<OperacaoDTO> operacoes;
 
+    @Transient
+    @Nullable
+    private String sigla;
+
 }

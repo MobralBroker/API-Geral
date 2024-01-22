@@ -72,6 +72,7 @@ public class OrdemService {
         List<Ordem> ordemList =ordemRepository.findByIdCliente(id); // Busca da Ordem
         if(!ordemList.isEmpty()){ // Verifica se possui a ordem com este ID
             for ( Ordem ordem : ordemList){
+                ordem.setSigla(ordem.getAtivo().getSigla());
                 if(ordem.getTipoOrdem().equals(enumTipoOrdem.ORDEM_VENDA)){ // Verica se é Venda ou compra
                     List<OperacaoDTO> operacoes = operacaoRepository.findByIdVenda(ordem.getId())// Atribui as operações de venda que pertence a esta ordem
 
