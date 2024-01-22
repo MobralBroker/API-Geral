@@ -2,16 +2,13 @@ package com.solinfbroker.apigeral.service;
 
 import com.solinfbroker.apigeral.config.exceptions.RecursoNaoAceitoException;
 import com.solinfbroker.apigeral.config.exceptions.RecursoNaoEncontradoException;
-import com.solinfbroker.apigeral.dtos.OrdemDTO;
 import com.solinfbroker.apigeral.model.ClienteModel;
-import com.solinfbroker.apigeral.model.enumTipoOrdem;
 import com.solinfbroker.apigeral.repository.ClienteRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Optional;
@@ -42,7 +39,7 @@ class ClienteServiceTest {
         Optional<ClienteModel> result = clienteService.buscarCliente(id);
 
         // Verifica se o Id pesquisado existe
-        assertThat(result.isPresent()).isTrue();
+        assertThat(result).isPresent();
     }
 
 
@@ -55,7 +52,7 @@ class ClienteServiceTest {
         Optional<ClienteModel> resultNaoExistente = clienteService.buscarCliente(idNaoExistente);
 
         // Verifica se o Id pesquisado não existe
-        assertThat(resultNaoExistente.isPresent()).isFalse();
+        assertThat(resultNaoExistente).isNotPresent();
     }
 
     @Test
@@ -178,7 +175,7 @@ class ClienteServiceTest {
         when(clienteMock.getId()).thenReturn(1L);
 
         assertThrows(RecursoNaoAceitoException.class, () -> {
-            clienteService.sacarSaldo(clienteMock.getId(), 50.0);
+            clienteService.sacarSaldo(1L, 50.0);
         });
     }
 
@@ -190,7 +187,7 @@ class ClienteServiceTest {
         when(clienteRepository.findById(any())).thenReturn(Optional.empty());
 
         assertThrows(RecursoNaoEncontradoException.class, () -> {
-            clienteService.sacarSaldo(clienteMock.getId(), 50.0);
+            clienteService.sacarSaldo(1L, 50.0);
         });
     }
 
@@ -205,7 +202,7 @@ class ClienteServiceTest {
         Optional<ClienteModel> result = Optional.ofNullable(clienteService.atualizarUsuario(clienteModelFicticio, id));
 
         // Verifica se o Id pesquisado existe
-        assertThat(result.isPresent()).isFalse();
+        assertThat(result).isNotPresent();
     }
 
     @Test
@@ -217,7 +214,7 @@ class ClienteServiceTest {
         when(clienteRepository.findById(any())).thenReturn(Optional.empty());
 
         assertThrows(RecursoNaoEncontradoException.class, () -> {
-            clienteService.atualizarUsuario(clienteMock, clienteOpt.get().getId());
+            clienteService.atualizarUsuario(clienteMock, 1L);
         });
     }
 }

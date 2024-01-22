@@ -4,8 +4,10 @@ import com.solinfbroker.apigeral.config.exceptions.RecursoNaoAceitoException;
 import com.solinfbroker.apigeral.dtos.OrdemDTO;
 import com.solinfbroker.apigeral.model.ClienteModel;
 import com.solinfbroker.apigeral.model.Ordem;
+import com.solinfbroker.apigeral.model.enumStatus;
 import com.solinfbroker.apigeral.model.enumTipoOrdem;
 import com.solinfbroker.apigeral.repository.ClienteRepository;
+import com.solinfbroker.apigeral.repository.OperacaoRepository;
 import com.solinfbroker.apigeral.repository.OrdemRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,6 +33,8 @@ class OrdemServiceTest {
     private OrdemRepository ordemRepository;
 
     @Mock
+    private OperacaoRepository operacaoRepository;
+    @Mock
     private ClienteRepository clienteRepository;
     @InjectMocks
     private OrdemService ordemService;
@@ -52,40 +56,31 @@ class OrdemServiceTest {
         assertEquals(1, listaRetornada.size());
     }
 
-    @Test
-    void testListarOrdemErro() {
-        List<Ordem> listaFake = Arrays.asList(
-                new Ordem()
-        );
-
-        // Configura o mock para retornar a lista fake
-        when(ordemRepository.findAll()).thenReturn(listaFake);
-
-        // Chama o método que você está testando
-        List<Ordem> listaRetornada = ordemService.listarOrdem();
-
-        // Asserts para verificar se a lista retornada é a esperada
-        assertNotNull(listaRetornada);
-        assertNotEquals(0, listaRetornada.size());
-    }
 
     @Test
-    void testBuscarOrdemSucesso() {
-        List<Ordem> listaFake = Arrays.asList(
-                new Ordem()
-        );
-
-        // Configura o mock para retornar a lista fake
-        when(ordemRepository.findById(listaFake.get(0).getId())).thenReturn(Optional.ofNullable(listaFake.get(0)));
+    void testBuscarOrdemSucessoCompra() {
+        Ordem ordemMock = mock(Ordem.class);
+        Optional<Ordem> ordemOpt = Optional.of(ordemMock);
 
 
+
+        when(ordemRepository.findById(1L)).thenReturn(ordemOpt);
+        when(ordemOpt.get().getTipoOrdem()).thenReturn(enumTipoOrdem.ORDEM_COMPRA);
+
+        assertThat(ordemService.buscarOrdem(1L)).isPresent();
 
     }
 
     @Test
-    void testBuscarOrdemErro() {
-    }
+    void testBuscarOrdemSucessoVenda() {
+        Ordem ordemMock = mock(Ordem.class);
+        Optional<Ordem> ordemOpt = Optional.of(ordemMock);
+        when(ordemRepository.findById(1L)).thenReturn(ordemOpt);
+        when(ordemOpt.get().getTipoOrdem()).thenReturn(enumTipoOrdem.ORDEM_VENDA);
 
+        assertThat(ordemService.buscarOrdem(1L)).isPresent();
+
+    }
     @Test
     void testCriarOrdemSucesso() {
         OrdemDTO ordem = mock(OrdemDTO.class);
@@ -103,7 +98,7 @@ class OrdemServiceTest {
     }
 
     @Test
-    void testCriarOrdemErro() {
+    void testCriarOrdemException() {
         OrdemDTO ordem = mock(OrdemDTO.class);
         ClienteModel clienteMock = mock(ClienteModel.class);
         Optional<ClienteModel> clienteOpt = Optional.of(clienteMock);
@@ -120,11 +115,76 @@ class OrdemServiceTest {
     }
 
     @Test
-    void testCancelarOrdemSucesso() {
+    void testCriarOrdemErro() {
+        OrdemDTO ordem = mock(OrdemDTO.class);
+        ClienteModel clienteMock = mock(ClienteModel.class);
+        Optional<ClienteModel> clienteOpt = Optional.of(clienteMock);
 
+        when(ordem.tipoOrdem()).thenReturn(enumTipoOrdem.ORDEM_VENDA);
+        when(clienteRepository.findById(any())).thenReturn(clienteOpt);
+        when(ordem.valorOrdem()).thenReturn(2.0);
+        when(ordem.quantidadeOrdem()).thenReturn(2);
+        when(ordemRepository.save(any())).thenReturn(new Ordem());
+
+        assertThat(ordemService.criarOrdem(ordem)).isNotNull();
     }
 
     @Test
-    void testCancelarOrdemErro() {
+    void testCancelarOrdemSemSucessoOrdemJaExecutada() {
+        Ordem ordem = mock(Ordem.class);
+        Optional<Ordem> ordemOpt = Optional.of(ordem);
+
+        when(ordemRepository.findById(1L)).thenReturn(ordemOpt);
+        when(ordem.getStatusOrdem()).thenReturn(enumStatus.EXECUTADA);
+
+        assertThrows(RecursoNaoAceitoException.class, () -> {
+            ordemService.cancelarOrdem(1L);
+        });
     }
+
+    @Test
+    void testCancelarOrdemComSucesso() {
+        Ordem ordem = mock(Ordem.class);
+        Optional<Ordem> ordemOpt = Optional.of(ordem);
+        ClienteModel cliente = mock(ClienteModel.class);
+        Optional<ClienteModel> clienteOpt = Optional.of(cliente);
+
+        when(ordemRepository.findById(1L)).thenReturn(ordemOpt);
+        when(ordem.getStatusOrdem()).thenReturn(enumStatus.ABERTA);
+        when(ordem.getIdCliente()).thenReturn(1L);
+        when(clienteRepository.findById(1L)).thenReturn(clienteOpt);
+        when(ordemRepository.save(ordem)).thenReturn(ordem);
+        assertThat(ordemService.cancelarOrdem(1L)).isNotNull();
+    }
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
