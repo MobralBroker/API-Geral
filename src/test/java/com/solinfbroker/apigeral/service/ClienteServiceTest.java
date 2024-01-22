@@ -1,6 +1,10 @@
 package com.solinfbroker.apigeral.service;
 
+import com.solinfbroker.apigeral.config.exceptions.RecursoNaoAceitoException;
+import com.solinfbroker.apigeral.config.exceptions.RecursoNaoEncontradoException;
+import com.solinfbroker.apigeral.dtos.OrdemDTO;
 import com.solinfbroker.apigeral.model.ClienteModel;
+import com.solinfbroker.apigeral.model.enumTipoOrdem;
 import com.solinfbroker.apigeral.repository.ClienteRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,8 +17,8 @@ import org.springframework.test.context.ActiveProfiles;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @ActiveProfiles("test")
@@ -93,6 +97,23 @@ class ClienteServiceTest {
     }
 
     @Test
+    void testAddSaldoException() {
+        long id = 1L;
+        double valor = 50.0;
+
+        // Criando um ClienteModel ficticio com um saldo suficiente
+        ClienteModel clienteModelFicticio = new ClienteModel();
+        clienteModelFicticio.setSaldo(100.0);
+
+        // Configurando o mock para retornar o ClienteModel fictício quando o método findById é chamado com o ID fornecido
+        when(clienteRepository.findById(id)).thenReturn(Optional.empty());
+
+        assertThrows(RecursoNaoEncontradoException.class, () -> {
+            clienteService.addSaldo(id, valor);
+        });
+    }
+
+    @Test
     void testSacarSaldoSucesso() {
         long id = 1L;
         double saldoInicial = 100.0;
@@ -137,7 +158,7 @@ class ClienteServiceTest {
             // Realiza o saque
             clienteService.sacarSaldo(id, valorSaque);
         } else {
-            throw new RuntimeException ("Saldo insuficiente para o saque");
+            throw new RecursoNaoAceitoException("Saque ", "possui saldo insuficiente");
         }
 
         // Calcula o saldo esperado após o saque
@@ -145,4 +166,82 @@ class ClienteServiceTest {
         // Verifica se o saldo foi deduzido incorretamente após o saque
         assertThat(clienteModelFicticio.getSaldo()).isNotEqualTo(saldoEsperado - 1); // -1 é para o valor ficar incorreto
     }
+
+    @Test
+    void testSacarSaldoInsulficiente() {
+        // Criando um ClienteModel fictício com um saldo suficiente
+        ClienteModel clienteMock = mock(ClienteModel.class);
+        Optional<ClienteModel> clienteOpt = Optional.of(clienteMock);
+
+        when(clienteRepository.findById(any())).thenReturn(clienteOpt);
+        when(clienteMock.getSaldo()).thenReturn(1.0);
+        when(clienteMock.getId()).thenReturn(1L);
+
+        assertThrows(RecursoNaoAceitoException.class, () -> {
+            clienteService.sacarSaldo(clienteMock.getId(), 50.0);
+        });
+    }
+
+    @Test
+    void testSacarSaldoNaoEncontrado() {
+        // Criando um ClienteModel fictício com um saldo suficiente
+        ClienteModel clienteMock = mock(ClienteModel.class);
+
+        when(clienteRepository.findById(any())).thenReturn(Optional.empty());
+
+        assertThrows(RecursoNaoEncontradoException.class, () -> {
+            clienteService.sacarSaldo(clienteMock.getId(), 50.0);
+        });
+    }
+
+    @Test
+    void atualizarUsuarioSucesso() {
+        // Configuração do mock para retornar um ClienteModel fictício
+        long id = 1L;
+        ClienteModel clienteModelFicticio = new ClienteModel();
+        when(clienteRepository.findById(id)).thenReturn(Optional.of(clienteModelFicticio));
+
+        // Chama o método que você deseja testar
+        Optional<ClienteModel> result = Optional.ofNullable(clienteService.atualizarUsuario(clienteModelFicticio, id));
+
+        // Verifica se o Id pesquisado existe
+        assertThat(result.isPresent()).isFalse();
+    }
+
+    @Test
+    void atualizarUsuarioException() {
+        /// Criando um ClienteModel fictício com um saldo suficiente
+        ClienteModel clienteMock = mock(ClienteModel.class);
+        Optional<ClienteModel> clienteOpt = Optional.of(clienteMock);
+
+        when(clienteRepository.findById(any())).thenReturn(clienteOpt);
+
+        assertThrows(RecursoNaoEncontradoException.class, () -> {
+            clienteService.atualizarUsuario(clienteMock, clienteOpt.get().getId());
+        });
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
