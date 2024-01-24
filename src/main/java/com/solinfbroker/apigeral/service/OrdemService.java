@@ -3,10 +3,8 @@ package com.solinfbroker.apigeral.service;
 import com.solinfbroker.apigeral.config.exceptions.RecursoNaoAceitoException;
 import com.solinfbroker.apigeral.dtos.OperacaoDTO;
 import com.solinfbroker.apigeral.dtos.OrdemDTO;
-import com.solinfbroker.apigeral.model.ClienteModel;
-import com.solinfbroker.apigeral.model.Ordem;
-import com.solinfbroker.apigeral.model.enumStatus;
-import com.solinfbroker.apigeral.model.enumTipoOrdem;
+import com.solinfbroker.apigeral.model.*;
+import com.solinfbroker.apigeral.repository.CarteiraRepository;
 import com.solinfbroker.apigeral.repository.ClienteRepository;
 import com.solinfbroker.apigeral.repository.OperacaoRepository;
 import com.solinfbroker.apigeral.repository.OrdemRepository;
@@ -28,6 +26,7 @@ public class OrdemService {
     private final OrdemRepository ordemRepository;
     private final OperacaoRepository operacaoRepository;
     private final ClienteRepository clienteRepository;
+    private final CarteiraRepository carteiraRepository;
 
     public List<Ordem> listarOrdem(){
         return ordemRepository.findAll();
@@ -133,8 +132,13 @@ public class OrdemService {
                 }
             }
         }else{
-            if(cliente.isPresent()){
-                // TODO Valida se o cara possui as ações e a quantidade dela
+            if(cliente.isPresent()){ //TODO descomentar o código abaixo quando já possui o migration para criar a empresa, ativos e usuário
+//                Integer itensCarteira = carteiraRepository.buscarItensCarteira(cliente.get().getId(),ordem.idAtivo());
+//                if(itensCarteira == null) itensCarteira =0;
+//                if(itensCarteira < ordem.quantidadeOrdem() ){
+//                    throw new RecursoNaoAceitoException("Ordem", "Não possui Ações suficiente!");
+//                }
+
                 Ordem ordemSalvar = new Ordem();
                 BeanUtils.copyProperties(ordem,ordemSalvar);
                 ordemSalvar.setStatusOrdem(enumStatus.ABERTA);
