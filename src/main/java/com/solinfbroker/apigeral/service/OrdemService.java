@@ -43,11 +43,12 @@ public class OrdemService {
                         .filter(Optional::isPresent)
                         .map(result ->
                                 new OperacaoDTO(
-                                        ((BigInteger) result.get()[0]).longValue(),
+                                        ((Long) result.get()[0]),
                                         (Integer) result.get()[1],
                                         ((Timestamp) result.get()[2]).toLocalDateTime(),
                                         enumStatus.valueOf((String) result.get()[3]),
-                                        enumTipoOrdem.valueOf((String) result.get()[4]))
+                                        enumTipoOrdem.valueOf((String) result.get()[4]),
+                                        (Integer) result.get()[5])
 
                         ).toList();
                 ordem.get().setOperacoes(operacoes);
@@ -59,7 +60,8 @@ public class OrdemService {
                                 (Integer)result[1],
                                 ((Timestamp)result[2]).toLocalDateTime(),
                                 enumStatus.valueOf((String)result[3]),
-                                enumTipoOrdem.valueOf((String)result[4])
+                                enumTipoOrdem.valueOf((String)result[4]),
+                                (Integer) result[5]
                         )).toList();
                 ordem.get().setOperacoes(operacoes);
             }
@@ -84,7 +86,8 @@ public class OrdemService {
                                             (Integer) result.get()[1],
                                             ((Timestamp) result.get()[2]).toLocalDateTime(),
                                             enumStatus.valueOf((String) result.get()[3]),
-                                            enumTipoOrdem.valueOf((String) result.get()[4]))
+                                            enumTipoOrdem.valueOf((String) result.get()[4]),
+                                            (Integer) result.get()[5])
 
                             ).toList();
                     ordem.setOperacoes(operacoes);
@@ -96,7 +99,8 @@ public class OrdemService {
                                     (Integer)result[1],
                                     ((Timestamp)result[2]).toLocalDateTime(),
                                     enumStatus.valueOf((String)result[3]),
-                                    enumTipoOrdem.valueOf((String)result[4])
+                                    enumTipoOrdem.valueOf((String)result[4]),
+                                    (Integer) result[5]
                             )).toList();
                     ordem.setOperacoes(operacoes);
                 }
@@ -118,9 +122,10 @@ public class OrdemService {
                     ordemSalvar.setStatusOrdem(enumStatus.ABERTA);
                     ordemSalvar.setDataLancamento(LocalDateTime.now());
                     ordemSalvar.setQuantidadeAberto(ordemSalvar.getQuantidadeOrdem());
+                    ordemSalvar.setValorClienteBloqueado(valorOrdem);
                     ordemSalva = ordemRepository.save(ordemSalvar);
 
-                    cliente.get().setValorBloqueado(valorOrdem); // Bloqueio do saldo do cliente
+                    cliente.get().setValorBloqueado(cliente.get().getValorBloqueado() + valorOrdem); // Bloqueio do saldo do cliente
                     cliente.get().setSaldo(cliente.get().getSaldo() - valorOrdem);
                     clienteRepository.save(cliente.get());
                 }else{
@@ -135,6 +140,7 @@ public class OrdemService {
                 ordemSalvar.setStatusOrdem(enumStatus.ABERTA);
                 ordemSalvar.setDataLancamento(LocalDateTime.now());
                 ordemSalvar.setQuantidadeAberto(ordemSalvar.getQuantidadeOrdem());
+                ordemSalvar.setValorClienteBloqueado(valorOrdem);
                 ordemSalva = ordemRepository.save(ordemSalvar);
             }
         }

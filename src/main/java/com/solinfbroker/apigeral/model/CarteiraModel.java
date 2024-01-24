@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -27,7 +27,7 @@ public class CarteiraModel {
 
   @Column(name = "data_compra", nullable = false)
   @JsonFormat(pattern="dd/MM/yyyy")
-  private LocalDate dataCompra;
+  private LocalDateTime dataCompra;
 
   @OneToOne
   @JoinColumn(name = "id_cliente", referencedColumnName = "id", insertable = false, updatable = false)

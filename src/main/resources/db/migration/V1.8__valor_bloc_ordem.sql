@@ -1,0 +1,1 @@
+ALTER TABLE ordem ADD COLUMN valor_cliente_bloqueado DOUBLE PRECISION NOT NULL DEFAULT 0;
