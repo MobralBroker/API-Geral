@@ -38,8 +38,8 @@ public class OrdemController {
     }
 
     @PostMapping
-    public Ordem criarOrdem(@RequestBody @Valid OrdemDTO ordem){
-        return ordemService.criarOrdem(ordem);
+    public ResponseEntity<Ordem> criarOrdem(@RequestBody @Valid OrdemDTO ordem){
+        return ResponseEntity.ok(ordemService.criarOrdem(ordem));
     }
 
     @PutMapping("/cancelar-ordem/{id}")
