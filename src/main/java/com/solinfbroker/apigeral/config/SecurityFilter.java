@@ -28,25 +28,25 @@ public class SecurityFilter extends OncePerRequestFilter{
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException{
         var token = this.recoveryToken(request);
         var tokenInvalido = "Token Inválido, refaça o login para liberar o acesso!";
-//        try {
             if(token != null){
                 try {
                     ResponseEntity<String> responseAuth = this.restTemplate.getForEntity(pathAutenticacao+"/auth/validar?token="+token, String.class);
                     if(responseAuth.getStatusCode().equals(HttpStatus.UNAUTHORIZED)){
                         throw new ApiRequestException(tokenInvalido);
+                    }else{
+                        filterChain.doFilter(request, response);
                     }
                 }catch (Exception e){
+
                     response.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
                     response.setCharacterEncoding("UTF-8");
                     response.getWriter().println(tokenInvalido);
-
                 }
             }else{
 
                 String requestURI = request.getRequestURI();
-    
                 // Checando se o request é um request do Swagger e permitindo acesso
-                if(requestURI.startsWith("/swagger-ui/") || 
+                if(requestURI.startsWith("/swagger-ui/") ||
                    requestURI.startsWith("/v2/api-docs") ||
                    requestURI.startsWith("/swagger-resources") || 
                    requestURI.startsWith("/webjars/") ||
@@ -58,22 +58,14 @@ public class SecurityFilter extends OncePerRequestFilter{
                    requestURI.startsWith("/swagger-ui/**") ||
                    requestURI.startsWith("/swagger-ui.html")
                    ) {
-            
-                   
+                    filterChain.doFilter(request, response);
                 } else {
                     throw new ApiRequestException(tokenInvalido);
                 }
                 
 
             }
-            filterChain.doFilter(request, response);
 
-//        } catch (Exception e){
-//            response.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
-//            response.setCharacterEncoding("UTF-8");
-//            response.getWriter().println(tokenInvalido);
-//
-//        }
 
     }
 
