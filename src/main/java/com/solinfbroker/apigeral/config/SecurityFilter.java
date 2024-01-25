@@ -42,6 +42,7 @@ public class SecurityFilter extends OncePerRequestFilter{
 
                 }
             }else{
+
                 String requestURI = request.getRequestURI();
     
                 // Checando se o request é um request do Swagger e permitindo acesso
@@ -63,6 +64,7 @@ public class SecurityFilter extends OncePerRequestFilter{
                     throw new ApiRequestException(tokenInvalido);
                 }
                 
+
             }
             filterChain.doFilter(request, response);
 
