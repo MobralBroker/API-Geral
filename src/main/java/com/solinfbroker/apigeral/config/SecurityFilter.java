@@ -42,7 +42,27 @@ public class SecurityFilter extends OncePerRequestFilter{
 
                 }
             }else{
-                throw new ApiRequestException(tokenInvalido);
+                String requestURI = request.getRequestURI();
+    
+                // Checando se o request é um request do Swagger e permitindo acesso
+                if(requestURI.startsWith("/swagger-ui/") || 
+                   requestURI.startsWith("/v2/api-docs") ||
+                   requestURI.startsWith("/swagger-resources") || 
+                   requestURI.startsWith("/webjars/") ||
+                   requestURI.startsWith("/api/v1/auth/**") ||
+                   requestURI.startsWith("/v3/api-docs") ||
+                   requestURI.startsWith("/v3/api-docs/index.html") ||
+                   requestURI.startsWith("/v3/api-docs/swagger-config") ||
+                   requestURI.startsWith("/v3/api-docs.yaml") ||
+                   requestURI.startsWith("/swagger-ui/**") ||
+                   requestURI.startsWith("/swagger-ui.html")
+                   ) {
+            
+                   
+                } else {
+                    throw new ApiRequestException(tokenInvalido);
+                }
+                
             }
             filterChain.doFilter(request, response);
 
