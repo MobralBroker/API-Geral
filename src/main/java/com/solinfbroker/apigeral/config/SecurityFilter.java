@@ -42,6 +42,7 @@ public class SecurityFilter extends OncePerRequestFilter{
 
                 }
             }else{
+
                 throw new ApiRequestException(tokenInvalido);
             }
             filterChain.doFilter(request, response);

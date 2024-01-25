@@ -61,9 +61,6 @@ class OrdemServiceTest {
     void testBuscarOrdemSucessoCompra() {
         Ordem ordemMock = mock(Ordem.class);
         Optional<Ordem> ordemOpt = Optional.of(ordemMock);
-
-
-
         when(ordemRepository.findById(1L)).thenReturn(ordemOpt);
         when(ordemOpt.get().getTipoOrdem()).thenReturn(enumTipoOrdem.ORDEM_COMPRA);
 
@@ -151,6 +148,7 @@ class OrdemServiceTest {
 
         when(ordemRepository.findById(1L)).thenReturn(ordemOpt);
         when(ordem.getStatusOrdem()).thenReturn(enumStatus.ABERTA);
+        when(ordem.getTipoOrdem()).thenReturn(enumTipoOrdem.ORDEM_COMPRA);
         when(ordem.getIdCliente()).thenReturn(1L);
         when(clienteRepository.findById(1L)).thenReturn(clienteOpt);
         when(ordemRepository.save(ordem)).thenReturn(ordem);
