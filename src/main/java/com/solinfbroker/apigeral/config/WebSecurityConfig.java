@@ -14,7 +14,13 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableMethodSecurity
 @RequiredArgsConstructor
 public class WebSecurityConfig {
-
+    private static final String[] AUTH_WHITE_LIST = {
+        "/api/v1/auth/**",
+        "/v3/api-docs/**",
+        "/v3/api-docs.yaml",
+        "/swagger-ui/**",
+        "/swagger-ui.html"
+    };
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
 
@@ -22,6 +28,7 @@ public class WebSecurityConfig {
         .csrf(csrf -> csrf.disable())
         .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests(authorize -> authorize
+            .requestMatchers(AUTH_WHITE_LIST).permitAll()    
             .anyRequest().permitAll()
            )
         .build();
