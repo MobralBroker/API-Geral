@@ -3,10 +3,8 @@ package com.solinfbroker.apigeral.service;
 import com.solinfbroker.apigeral.config.exceptions.RecursoNaoAceitoException;
 import com.solinfbroker.apigeral.dtos.OperacaoDTO;
 import com.solinfbroker.apigeral.dtos.OrdemDTO;
-import com.solinfbroker.apigeral.model.ClienteModel;
-import com.solinfbroker.apigeral.model.Ordem;
-import com.solinfbroker.apigeral.model.enumStatus;
-import com.solinfbroker.apigeral.model.enumTipoOrdem;
+import com.solinfbroker.apigeral.model.*;
+import com.solinfbroker.apigeral.repository.CarteiraRepository;
 import com.solinfbroker.apigeral.repository.ClienteRepository;
 import com.solinfbroker.apigeral.repository.OperacaoRepository;
 import com.solinfbroker.apigeral.repository.OrdemRepository;
@@ -28,6 +26,7 @@ public class OrdemService {
     private final OrdemRepository ordemRepository;
     private final OperacaoRepository operacaoRepository;
     private final ClienteRepository clienteRepository;
+    private final CarteiraRepository carteiraRepository;
 
     public List<Ordem> listarOrdem(){
         return ordemRepository.findAll();
@@ -43,11 +42,12 @@ public class OrdemService {
                         .filter(Optional::isPresent)
                         .map(result ->
                                 new OperacaoDTO(
-                                        ((BigInteger) result.get()[0]).longValue(),
+                                        ((Long) result.get()[0]),
                                         (Integer) result.get()[1],
                                         ((Timestamp) result.get()[2]).toLocalDateTime(),
                                         enumStatus.valueOf((String) result.get()[3]),
-                                        enumTipoOrdem.valueOf((String) result.get()[4]))
+                                        enumTipoOrdem.valueOf((String) result.get()[4]),
+                                        (Integer) result.get()[5])
 
                         ).toList();
                 ordem.get().setOperacoes(operacoes);
@@ -59,7 +59,8 @@ public class OrdemService {
                                 (Integer)result[1],
                                 ((Timestamp)result[2]).toLocalDateTime(),
                                 enumStatus.valueOf((String)result[3]),
-                                enumTipoOrdem.valueOf((String)result[4])
+                                enumTipoOrdem.valueOf((String)result[4]),
+                                (Integer) result[5]
                         )).toList();
                 ordem.get().setOperacoes(operacoes);
             }
@@ -84,7 +85,8 @@ public class OrdemService {
                                             (Integer) result.get()[1],
                                             ((Timestamp) result.get()[2]).toLocalDateTime(),
                                             enumStatus.valueOf((String) result.get()[3]),
-                                            enumTipoOrdem.valueOf((String) result.get()[4]))
+                                            enumTipoOrdem.valueOf((String) result.get()[4]),
+                                            (Integer) result.get()[5])
 
                             ).toList();
                     ordem.setOperacoes(operacoes);
@@ -96,7 +98,8 @@ public class OrdemService {
                                     (Integer)result[1],
                                     ((Timestamp)result[2]).toLocalDateTime(),
                                     enumStatus.valueOf((String)result[3]),
-                                    enumTipoOrdem.valueOf((String)result[4])
+                                    enumTipoOrdem.valueOf((String)result[4]),
+                                    (Integer) result[5]
                             )).toList();
                     ordem.setOperacoes(operacoes);
                 }
@@ -118,9 +121,10 @@ public class OrdemService {
                     ordemSalvar.setStatusOrdem(enumStatus.ABERTA);
                     ordemSalvar.setDataLancamento(LocalDateTime.now());
                     ordemSalvar.setQuantidadeAberto(ordemSalvar.getQuantidadeOrdem());
+                    ordemSalvar.setValorClienteBloqueado(valorOrdem);
                     ordemSalva = ordemRepository.save(ordemSalvar);
 
-                    cliente.get().setValorBloqueado(valorOrdem); // Bloqueio do saldo do cliente
+                    cliente.get().setValorBloqueado(cliente.get().getValorBloqueado() + valorOrdem); // Bloqueio do saldo do cliente
                     cliente.get().setSaldo(cliente.get().getSaldo() - valorOrdem);
                     clienteRepository.save(cliente.get());
                 }else{
@@ -128,13 +132,19 @@ public class OrdemService {
                 }
             }
         }else{
-            if(cliente.isPresent()){
-                // TODO Valida se o cara possui as ações e a quantidade dela
+            if(cliente.isPresent()){ //TODO descomentar o código abaixo quando já possui o migration para criar a empresa, ativos e usuário
+//                Integer itensCarteira = carteiraRepository.buscarItensCarteira(cliente.get().getId(),ordem.idAtivo());
+//                if(itensCarteira == null) itensCarteira =0;
+//                if(itensCarteira < ordem.quantidadeOrdem() ){
+//                    throw new RecursoNaoAceitoException("Ordem", "Não possui Ações suficiente!");
+//                }
+
                 Ordem ordemSalvar = new Ordem();
                 BeanUtils.copyProperties(ordem,ordemSalvar);
                 ordemSalvar.setStatusOrdem(enumStatus.ABERTA);
                 ordemSalvar.setDataLancamento(LocalDateTime.now());
                 ordemSalvar.setQuantidadeAberto(ordemSalvar.getQuantidadeOrdem());
+                ordemSalvar.setValorClienteBloqueado(valorOrdem);
                 ordemSalva = ordemRepository.save(ordemSalvar);
             }
         }

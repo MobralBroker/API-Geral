@@ -79,6 +79,7 @@ public class OrdemController {
         return ResponseEntity.ok(ordens);
     }
 
+
     @Operation(summary = "Realiza o cadastramento de novas ordens de compra e de venda", method = "POST")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Cadastramento de uma nova ordem foi um sucesso."),
@@ -88,8 +89,8 @@ public class OrdemController {
         @ApiResponse(responseCode = "500", description = "Indica erro no servidor"),
     })
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public Ordem criarOrdem(@RequestBody @Valid OrdemDTO ordem){
-        return ordemService.criarOrdem(ordem);
+    public ResponseEntity<Ordem> criarOrdem(@RequestBody @Valid OrdemDTO ordem){
+        return ResponseEntity.ok(ordemService.criarOrdem(ordem));
     }
 
     @Operation(summary = "Realiza o cancelamento de novas ordens de compra e de venda", method = "PUT")
