@@ -1,6 +1,5 @@
 package com.solinfbroker.apigeral.config;
 
-import com.solinfbroker.apigeral.config.exceptions.ApiRequestException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -28,18 +27,21 @@ public class SecurityFilter extends OncePerRequestFilter{
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException{
         var token = this.recoveryToken(request);
         var tokenInvalido = "Token Inválido, refaça o login para liberar o acesso!";
+        var utf = "UTF-8";
             if(token != null){
                 try {
                     ResponseEntity<String> responseAuth = this.restTemplate.getForEntity(pathAutenticacao+"/auth/validar?token="+token, String.class);
                     if(responseAuth.getStatusCode().equals(HttpStatus.UNAUTHORIZED)){
-                        throw new ApiRequestException(tokenInvalido);
+                        response.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
+                        response.setCharacterEncoding(utf);
+                        response.getWriter().println(tokenInvalido);
                     }else{
                         filterChain.doFilter(request, response);
                     }
                 }catch (Exception e){
 
                     response.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
-                    response.setCharacterEncoding("UTF-8");
+                    response.setCharacterEncoding(utf);
                     response.getWriter().println(tokenInvalido);
                 }
             }else{
@@ -60,7 +62,9 @@ public class SecurityFilter extends OncePerRequestFilter{
                    ) {
                     filterChain.doFilter(request, response);
                 } else {
-                    throw new ApiRequestException(tokenInvalido);
+                    response.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
+                    response.setCharacterEncoding(utf);
+                    response.getWriter().println(tokenInvalido);
                 }
                 
 
