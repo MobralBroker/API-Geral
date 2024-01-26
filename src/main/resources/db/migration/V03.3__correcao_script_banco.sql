@@ -12,9 +12,3 @@ BEGIN
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
-
--- Trigger associada à função, executada após uma atualização na tabela ativo
-CREATE TRIGGER after_update_ativo
-AFTER UPDATE ON ativo
-FOR EACH ROW
-EXECUTE FUNCTION after_update_ativo();
