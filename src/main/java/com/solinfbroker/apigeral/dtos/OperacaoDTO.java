@@ -19,7 +19,9 @@ public record OperacaoDTO(
     enumStatus statusOperacao,
     @Column(name = "tipo_ordem", nullable = false, length = 12)
     @Enumerated(EnumType.STRING)
-    enumTipoOrdem tipoOrdem
+    enumTipoOrdem tipoOrdem,
+    @Column(name = "valor_ativo_execucao",nullable = false)
+    double valorAtivoExecucao
 
 ) {
 }

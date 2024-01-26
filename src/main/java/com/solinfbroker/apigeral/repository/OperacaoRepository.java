@@ -22,7 +22,8 @@ public interface OperacaoRepository extends JpaRepository<Operacao,Long> {
             "op.quantidade as op_quantidade,"+
             "op.data_execucao as op_data_execucao,"+
             "op.status_operacao as op_status_operacao,"+
-            "ord.tipo_ordem as ord_tipo_ordem "+
+            "ord.tipo_ordem as ord_tipo_ordem, "+
+            "op.valor_ativo_execucao as op_valor_ativo_execucao "+
             "from operacao op "+
             "inner join ordem ord on ord.id = op.id_venda where op.id_venda = ?1 ", nativeQuery = true)
             Set<Optional<Object[]>> findByIdVenda(Long id);
@@ -32,7 +33,8 @@ public interface OperacaoRepository extends JpaRepository<Operacao,Long> {
             "op.quantidade as op_quantidade,"+
             "op.data_execucao as op_data_execucao,"+
             "op.status_operacao as op_status_operacao,"+
-            "ord.tipo_ordem as ord_tipo_ordem "+
+            "ord.tipo_ordem as ord_tipo_ordem, "+
+            "op.valor_ativo_execucao as op_valor_ativo_execucao "+
             "from operacao op "+
             "inner join ordem ord on ord.id = op.id_compra where op.id_compra = ?1", nativeQuery = true)
     Set<Object[]> findByIdCompra(Long id);
