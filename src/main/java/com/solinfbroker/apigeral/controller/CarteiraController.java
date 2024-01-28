@@ -2,8 +2,7 @@ package com.solinfbroker.apigeral.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.solinfbroker.apigeral.model.CarteiraModel;
 import com.solinfbroker.apigeral.repository.CarteiraRepository;
@@ -12,11 +11,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -53,8 +47,8 @@ public class CarteiraController {
     @ApiResponse(responseCode = "404", description = "A solicitação não pode ser realizada pois o id passado não existe."),
     @ApiResponse(responseCode = "500", description = "Indica erro no servidor."),
 })
-  @GetMapping("/cliente")
-  public ResponseEntity<List<CarteiraModel>> listarCarteiraIdCliente(@RequestParam("idCliente") Long id) {
+  @GetMapping("/cliente/{id}")
+  public ResponseEntity<List<CarteiraModel>> listarCarteiraIdCliente(@PathVariable Long id) {
     return ResponseEntity.ok(carteiraRepository.findByClienteId(id));
   }
   @Operation(summary = "Realiza o cadastramento de novos itens da Carteira", method = "POST")

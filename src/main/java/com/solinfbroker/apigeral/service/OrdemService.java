@@ -86,7 +86,7 @@ public class OrdemService {
                                             ((Timestamp) result.get()[2]).toLocalDateTime(),
                                             enumStatus.valueOf((String) result.get()[3]),
                                             enumTipoOrdem.valueOf((String) result.get()[4]),
-                                            (Integer) result.get()[5])
+                                            (double) result.get()[5])
 
                             ).toList();
                     ordem.setOperacoes(operacoes);
@@ -99,7 +99,7 @@ public class OrdemService {
                                     ((Timestamp)result[2]).toLocalDateTime(),
                                     enumStatus.valueOf((String)result[3]),
                                     enumTipoOrdem.valueOf((String)result[4]),
-                                    (Integer) result[5]
+                                    (double) result[5]
                             )).toList();
                     ordem.setOperacoes(operacoes);
                 }
