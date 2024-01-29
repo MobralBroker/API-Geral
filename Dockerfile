@@ -21,7 +21,7 @@ WORKDIR /ms-crud
 # Copia apenas o JAR construído do estágio anterior
 COPY --from=builder /ms-crud/target/*.jar app.jar
 
-# Expondo a porta 8080
+# Expondo a porta 8081
 EXPOSE 8081
 
 # Comando para executar a aplicação quando o contêiner for iniciado
