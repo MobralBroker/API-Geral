@@ -23,12 +23,32 @@ public class HistoricoPrecoController {
         return ResponseEntity.ok(historicoPrecoRepository.findByIdAtivo(id));
     }
 
-    @GetMapping("/grafico/{id}")
+    @GetMapping("/grafico-data/{id}")
     private ResponseEntity<Map<String, Object>> listarHistoricoPreco(@PathVariable Long id,
                                                                                  @RequestParam("dataInicial") LocalDateTime dataInicial,
                                                                                  @RequestParam("dataFinal") LocalDateTime dataFinal,
                                                                                  @RequestParam("periodo") String periodo){
         List<Object[]> historicoPrecos = historicoPrecoRepository.findHistoricoSimplificado(id,dataInicial,dataFinal, periodo);
+        Map<String, Object> data = new HashMap<>();
+        List<Map<String, Object>> dadosFormatados = new ArrayList<>();
+        for (Object[] resultado : historicoPrecos) {
+            Map<String, Object> dados = new HashMap<>();
+            dados.put("x", resultado[0]); // data
+            dados.put("y", Arrays.asList(resultado[1], resultado[2], resultado[3], resultado[4])); // valores=
+            dadosFormatados.add(dados);
+            data.put("data",dadosFormatados);
+
+        }
+        return ResponseEntity.ok(data);
+    }
+
+    @GetMapping("/grafico/{id}")
+    private ResponseEntity<Map<String, Object>> listarHistoricoPreco(@PathVariable Long id,
+                                                                     @RequestParam("escala") String escala,
+                                                                     @RequestParam("periodo") long periodo){
+        LocalDateTime dataFinal = LocalDateTime.now();
+        LocalDateTime dataInicial = LocalDateTime.now().minusDays(periodo);
+        List<Object[]> historicoPrecos = historicoPrecoRepository.findHistoricoSimplificado(id,dataInicial,dataFinal, escala);
         Map<String, Object> data = new HashMap<>();
         List<Map<String, Object>> dadosFormatados = new ArrayList<>();
         for (Object[] resultado : historicoPrecos) {
