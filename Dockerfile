@@ -22,7 +22,7 @@ WORKDIR /ms-crud
 COPY --from=builder /ms-crud/target/*.jar app.jar
 
 # Expondo a porta 8080
-EXPOSE 8082
+EXPOSE 8081
 
 # Comando para executar a aplicação quando o contêiner for iniciado
 CMD ["java", "-jar", "app.jar"]
