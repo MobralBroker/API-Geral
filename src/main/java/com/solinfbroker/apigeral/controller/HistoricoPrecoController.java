@@ -54,7 +54,7 @@ public class HistoricoPrecoController {
         for (Object[] resultado : historicoPrecos) {
             Map<String, Object> dados = new HashMap<>();
             dados.put("x", resultado[0]); // data
-            dados.put("y", Arrays.asList(resultado[1], resultado[2], resultado[3], resultado[4])); // valores=
+            dados.put("y", Arrays.asList(resultado[3], resultado[2], resultado[1], resultado[4])); // valores=
             dadosFormatados.add(dados);
             data.put("data",dadosFormatados);
 
