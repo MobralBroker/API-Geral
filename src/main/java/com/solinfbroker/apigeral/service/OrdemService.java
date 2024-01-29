@@ -3,7 +3,10 @@ package com.solinfbroker.apigeral.service;
 import com.solinfbroker.apigeral.config.exceptions.RecursoNaoAceitoException;
 import com.solinfbroker.apigeral.dtos.OperacaoDTO;
 import com.solinfbroker.apigeral.dtos.OrdemDTO;
-import com.solinfbroker.apigeral.model.*;
+import com.solinfbroker.apigeral.model.ClienteModel;
+import com.solinfbroker.apigeral.model.Ordem;
+import com.solinfbroker.apigeral.model.enumStatus;
+import com.solinfbroker.apigeral.model.enumTipoOrdem;
 import com.solinfbroker.apigeral.repository.CarteiraRepository;
 import com.solinfbroker.apigeral.repository.ClienteRepository;
 import com.solinfbroker.apigeral.repository.OperacaoRepository;
@@ -13,7 +16,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
-import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -81,7 +83,7 @@ public class OrdemService {
                             .filter(Optional::isPresent)
                             .map(result ->
                                     new OperacaoDTO(
-                                            ((BigInteger) result.get()[0]).longValue(),
+                                            ((Long) result.get()[0]),
                                             (Integer) result.get()[1],
                                             ((Timestamp) result.get()[2]).toLocalDateTime(),
                                             enumStatus.valueOf((String) result.get()[3]),

@@ -35,7 +35,7 @@ public class AtivoController {
         @ApiResponse(responseCode = "500", description = "Indica erro no servidor."),
     })
     public ResponseEntity<List<AtivoModel>> listarAtivos(){
-        return ResponseEntity.ok(ativoRepository.findAll());
+        return ResponseEntity.ok(ativoRepository.findAllByOrderByAtualizacaoDesc());
     }
 
     @Operation(
