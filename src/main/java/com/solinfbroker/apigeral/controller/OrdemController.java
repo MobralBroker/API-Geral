@@ -42,6 +42,22 @@ public class OrdemController {
         return ResponseEntity.ok(ordemService.listarOrdem());
     }
 
+    @GetMapping(value = "/aberta")
+    @Operation(
+            summary = "Realiza a listagem de todos os ativos que se encontram no banco de dados com status Aberto ou Executado Parcial",
+            method = "GET")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Listagem de ordens executada com suceso."),
+            @ApiResponse(responseCode = "204", description = "A solicitação foi bem sucedida, porém não há conteúdo para enviar."),
+            @ApiResponse(responseCode = "400", description = "Parametros inválidos"),
+            @ApiResponse(responseCode = "403", description = "A solicitação não pode ser realizada por falta de autenticação."),
+            @ApiResponse(responseCode = "404", description = "A solicitação não pode ser realizada pois o id passado não existe."),
+            @ApiResponse(responseCode = "500", description = "Indica erro no servidor."),
+    })
+    public ResponseEntity<List<Ordem>> listarOrdemAberto(){
+        return ResponseEntity.ok(ordemService.listarOrdemAberta());
+    }
+
     @Operation(
         summary = "Realiza a listagem apenas de ordens que for passado por parâmetro id",
         method = "GET")

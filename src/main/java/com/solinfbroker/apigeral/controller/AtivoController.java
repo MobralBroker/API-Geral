@@ -35,7 +35,7 @@ public class AtivoController {
         @ApiResponse(responseCode = "500", description = "Indica erro no servidor."),
     })
     public ResponseEntity<List<AtivoModel>> listarAtivos(){
-        return ResponseEntity.ok(ativoRepository.findAll());
+        return ResponseEntity.ok(ativoRepository.findAllByOrderByAtualizacaoDesc());
     }
 
     @Operation(
@@ -95,7 +95,7 @@ public class AtivoController {
         @ApiResponse(responseCode = "500", description = "Indica erro no servidor."),
     })
     @GetMapping("/sigla")
-    private ResponseEntity<List<AtivoModel>> listarAtivosSigla(@RequestParam("sigla") String sigla) {
+    public ResponseEntity<List<AtivoModel>> listarAtivosSigla(@RequestParam("sigla") String sigla) {
         return ResponseEntity.ok(ativoRepository.findBysigla(sigla));
     }
     
