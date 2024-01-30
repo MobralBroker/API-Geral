@@ -1,17 +1,17 @@
 package com.solinfbroker.apigeral.controller;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
+import com.solinfbroker.apigeral.dtos.CarteiraGrupoDTO;
 import com.solinfbroker.apigeral.model.CarteiraModel;
 import com.solinfbroker.apigeral.repository.CarteiraRepository;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -48,8 +48,19 @@ public class CarteiraController {
     @ApiResponse(responseCode = "500", description = "Indica erro no servidor."),
 })
   @GetMapping("/cliente/{id}")
-  public ResponseEntity<List<CarteiraModel>> listarCarteiraIdCliente(@PathVariable Long id) {
-    return ResponseEntity.ok(carteiraRepository.findByClienteId(id));
+  public ResponseEntity<List<CarteiraGrupoDTO>> listarCarteiraIdCliente(@PathVariable Long id) {
+    List<Object[]> resultados = carteiraRepository.listarItensCarteira(id);
+    List<CarteiraGrupoDTO> carteiraDTOs = new ArrayList<>();
+
+    for (Object[] resultado : resultados) {
+      carteiraDTOs.add(new CarteiraGrupoDTO(
+              (Long) resultado[0],
+              (Long) resultado[1],
+              (Long) resultado[2],
+              (String) resultado[3]
+      ));
+    }
+    return ResponseEntity.ok(carteiraDTOs);
   }
   @Operation(summary = "Realiza o cadastramento de novos itens da Carteira", method = "POST")
   @ApiResponses(value = {
