@@ -35,4 +35,4 @@ jobs:
         with:
           context: .
           push: true
-          tags:  solinfbroker/teste-actions:latest
+          tags:  solinfbroker/api-crud:latest
