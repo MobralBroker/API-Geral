@@ -1,1 +1,0 @@
-ALTER TABLE operacao ADD COLUMN valor_ativo_execucao DOUBLE PRECISION NOT NULL DEFAULT 0;

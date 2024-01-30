@@ -29,7 +29,7 @@ public class SecurityFilter extends OncePerRequestFilter{
         var tokenInvalido = "Token Inválido, refaça o login para liberar o acesso!";
         var utf = "UTF-8";
             if(token != null){
-//                try {
+                try {
                     ResponseEntity<String> responseAuth = this.restTemplate.getForEntity(pathAutenticacao+"/auth/validar?token="+token, String.class);
                     if(responseAuth.getStatusCode().equals(HttpStatus.UNAUTHORIZED)){
                         response.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
@@ -38,12 +38,12 @@ public class SecurityFilter extends OncePerRequestFilter{
                     }else{
                         filterChain.doFilter(request, response);
                     }
-//                }catch (Exception e){
-//
-//                    response.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
-//                    response.setCharacterEncoding(utf);
-//                    response.getWriter().println(tokenInvalido);
-//                }
+                }catch (Exception e){
+
+                    response.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
+                    response.setCharacterEncoding(utf);
+                    response.getWriter().println(tokenInvalido);
+                }
             }else{
 
                 String requestURI = request.getRequestURI();
