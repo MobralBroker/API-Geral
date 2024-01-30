@@ -1,6 +1,6 @@
 package com.solinfbroker.apigeral.controller;
 
-import com.solinfbroker.apigeral.model.HistoricoPreco;
+import com.solinfbroker.apigeral.model.HistoricoPrecoModel;
 import com.solinfbroker.apigeral.repository.HistoricoPrecoRepository;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -19,12 +19,12 @@ public class HistoricoPrecoController {
     private final HistoricoPrecoRepository historicoPrecoRepository;
 
     @GetMapping("/{id}")
-    private ResponseEntity<List<HistoricoPreco>> listarHistoricoPreco(@PathVariable Long id){
+    public ResponseEntity<List<HistoricoPrecoModel>> listarHistoricoPreco(@PathVariable Long id){
         return ResponseEntity.ok(historicoPrecoRepository.findByIdAtivo(id));
     }
 
     @GetMapping("/grafico-data/{id}")
-    private ResponseEntity<Map<String, Object>> listarHistoricoPreco(@PathVariable Long id,
+    public ResponseEntity<Map<String, Object>> listarHistoricoPreco(@PathVariable Long id,
                                                                                  @RequestParam("dataInicial") LocalDateTime dataInicial,
                                                                                  @RequestParam("dataFinal") LocalDateTime dataFinal,
                                                                                  @RequestParam("periodo") String periodo){
@@ -43,7 +43,7 @@ public class HistoricoPrecoController {
     }
 
     @GetMapping("/grafico/{id}")
-    private ResponseEntity<Map<String, Object>> listarHistoricoPreco(@PathVariable Long id,
+    public ResponseEntity<Map<String, Object>> listarHistoricoPreco(@PathVariable Long id,
                                                                      @RequestParam("escala") String escala,
                                                                      @RequestParam("periodo") long periodo){
         LocalDateTime dataFinal = LocalDateTime.now();

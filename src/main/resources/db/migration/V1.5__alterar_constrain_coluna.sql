@@ -1,1 +1,0 @@
-ALTER TABLE ordem ALTER COLUMN status_ordem TYPE VARCHAR(18);
