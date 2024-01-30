@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @ActiveProfiles("test")
@@ -32,8 +32,8 @@ class CarteiraControllerTest {
 
     @Test
     void listarCarteiraIdCliente() {
-        List<CarteiraModel> carteiraModelList = new ArrayList<>();
-        when(carteiraRepository.findByClienteId(1L)).thenReturn(carteiraModelList);
+        List<Object[]> carteiraModelList = new ArrayList<>();
+        when(carteiraRepository.listarItensCarteira(1L)).thenReturn(carteiraModelList);
         assertThat(carteiraController.listarCarteiraIdCliente(1L)).isNotNull();
     }
 
