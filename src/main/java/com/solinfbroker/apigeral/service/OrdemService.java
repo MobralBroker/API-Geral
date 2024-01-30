@@ -34,6 +34,10 @@ public class OrdemService {
         return ordemRepository.findAll();
     }
 
+    public List<Ordem> listarOrdemAberta(){
+        return ordemRepository.findByStatusOrdemAberta();
+    }
+
     public Optional<Ordem> buscarOrdem(Long id){
         Optional<Ordem> ordem =ordemRepository.findById(id); // Busca da Ordem
         if(ordem.isPresent()){ // Verifica se possui a ordem com este ID
