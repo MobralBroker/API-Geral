@@ -128,23 +128,25 @@ public class OrdemService {
                     ordemSalvar.setDataLancamento(LocalDateTime.now());
                     ordemSalvar.setQuantidadeAberto(ordemSalvar.getQuantidadeOrdem());
                     ordemSalvar.setValorClienteBloqueado(valorOrdem);
-                    ordemSalva = ordemRepository.save(ordemSalvar);
+
 
                     cliente.get().setValorBloqueado(cliente.get().getValorBloqueado() + valorOrdem); // Bloqueio do saldo do cliente
                     cliente.get().setSaldo(cliente.get().getSaldo() - valorOrdem);
                     clienteRepository.save(cliente.get());
+
+                    ordemSalva = ordemRepository.save(ordemSalvar);
                 }else{
                     throw new RecursoNaoAceitoException("Criar Ordem", "saldo Insulficiente ou bloqueado!");
                 }
             }
         }else{
-            if(cliente.isPresent()){ //TODO descomentar o código abaixo quando já possui o migration para criar a empresa, ativos e usuário
-//                Integer itensCarteira = carteiraRepository.buscarItensCarteira(cliente.get().getId(),ordem.idAtivo());
-//                if(itensCarteira == null) itensCarteira =0;
-//                if(itensCarteira < ordem.quantidadeOrdem() ){
-//                    throw new RecursoNaoAceitoException("Ordem", "Não possui Ações suficiente!");
-//                }
-
+            if(cliente.isPresent()){
+                Integer itensCarteira = carteiraRepository.buscarItensCarteira(cliente.get().getId(),ordem.idAtivo());
+                if(itensCarteira == null) itensCarteira =0;
+                if(itensCarteira < ordem.quantidadeOrdem() ){
+                    throw new RecursoNaoAceitoException("Ordem", "Não possui Ações suficiente!");
+                }
+                System.out.println(cliente.get().getNomeUsuario()+ " itens: "+itensCarteira +" valorOrdem: "+ ordem.quantidadeOrdem());
                 Ordem ordemSalvar = new Ordem();
                 BeanUtils.copyProperties(ordem,ordemSalvar);
                 ordemSalvar.setStatusOrdem(enumStatus.ABERTA);
