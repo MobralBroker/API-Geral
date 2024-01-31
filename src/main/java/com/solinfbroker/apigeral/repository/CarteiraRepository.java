@@ -14,7 +14,7 @@ public interface CarteiraRepository extends JpaRepository<CarteiraModel, Long>{
   List<CarteiraModel> findByClienteId(@Param("idCliente") Long idCliente);
 
   @Query(value="SELECT ca.id_cliente, ca.id_ativo, SUM(ca.quantidade) as quantidade, at.sigla  " +
-          "FROM carteira ca JOIN ativo at ON ca.id_ativo = at.id WHERE ca.id_cliente = :idCliente GROUP BY ca.id_cliente, ca.id_ativo, ca.quantidade, at.sigla order by at.sigla ASC", nativeQuery = true)
+          "FROM carteira ca JOIN ativo at ON ca.id_ativo = at.id WHERE ca.id_cliente = :idCliente GROUP BY ca.id_cliente, ca.id_ativo, at.sigla order by at.sigla ASC", nativeQuery = true)
   List<Object[]> listarItensCarteira(@Param("idCliente") Long idCliente);
 
   @Query(value = "select sum(quantidade) from carteira  where id_cliente = ?1 and id_ativo = ?2", nativeQuery = true)
