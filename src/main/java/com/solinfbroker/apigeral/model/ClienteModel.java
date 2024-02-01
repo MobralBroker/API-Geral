@@ -55,4 +55,7 @@ public class ClienteModel{
     @Column(name = "valor_bloqueado")
     private double valorBloqueado;
 
+    @Version
+    private Long versao;
+
 }
