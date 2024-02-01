@@ -3,7 +3,7 @@ name: Teste versionamento docker hub
 on:
   release:
     types:
-      - prereleased
+      - released
 
 jobs:
   build-and-push-image:
@@ -35,4 +35,4 @@ jobs:
         with:
           context: .
           push: true
-          tags:  solinfbroker/api-crud:development
+          tags:  solinfbroker/api-crud:latest
