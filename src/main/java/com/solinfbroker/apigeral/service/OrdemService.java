@@ -3,10 +3,7 @@ package com.solinfbroker.apigeral.service;
 import com.solinfbroker.apigeral.config.exceptions.RecursoNaoAceitoException;
 import com.solinfbroker.apigeral.dtos.OperacaoDTO;
 import com.solinfbroker.apigeral.dtos.OrdemDTO;
-import com.solinfbroker.apigeral.model.ClienteModel;
-import com.solinfbroker.apigeral.model.Ordem;
-import com.solinfbroker.apigeral.model.enumStatus;
-import com.solinfbroker.apigeral.model.enumTipoOrdem;
+import com.solinfbroker.apigeral.model.*;
 import com.solinfbroker.apigeral.repository.CarteiraRepository;
 import com.solinfbroker.apigeral.repository.ClienteRepository;
 import com.solinfbroker.apigeral.repository.OperacaoRepository;
@@ -76,7 +73,7 @@ public class OrdemService {
     }
 
     public List<Ordem> buscarOrdemCliente(Long id){
-        List<Ordem> ordemList =ordemRepository.findByIdCliente(id); // Busca da Ordem
+        List<Ordem> ordemList =ordemRepository.findByIdClienteOrderByDataLancamentoDesc(id); // Busca da Ordem
         if(!ordemList.isEmpty()){ // Verifica se possui a ordem com este ID
             for ( Ordem ordem : ordemList){
                 ordem.setSigla(ordem.getAtivo().getSigla());
@@ -141,19 +138,47 @@ public class OrdemService {
             }
         }else{
             if(cliente.isPresent()){
-                Integer itensCarteira = carteiraRepository.buscarItensCarteira(cliente.get().getId(),ordem.idAtivo());
+                Integer itensCarteira = carteiraRepository.buscarQuantideCarteira(cliente.get().getId(),ordem.idAtivo());
+                Integer itensCarteiraBloqueado = carteiraRepository.buscarQuantidadeBloqueadoCarteira(cliente.get().getId(),ordem.idAtivo());
                 if(itensCarteira == null) itensCarteira =0;
-                if(itensCarteira < ordem.quantidadeOrdem() ){
-                    throw new RecursoNaoAceitoException("Ordem", "Não possui Ações suficiente!");
+                if(itensCarteiraBloqueado == null) itensCarteiraBloqueado =0;
+//                boolean diferencaMaiorQueLimite = carteiraRepository.verificarDiferencaMaiorQueLimite(cliente.get().getId(), ordem.idAtivo(), ordem.quantidadeOrdem());
+
+                Integer quantDisponivel = itensCarteira - itensCarteiraBloqueado;
+
+                if(quantDisponivel == 0 ){
+                    throw new RecursoNaoAceitoException("Ordem", "Não possui Ações disponíveis suficiente!");
                 }
-                System.out.println(cliente.get().getNomeUsuario()+ " itens: "+itensCarteira +" valorOrdem: "+ ordem.quantidadeOrdem());
+
+                if(ordem.quantidadeOrdem() > quantDisponivel){
+                    throw new RecursoNaoAceitoException("Ordem", "Não possui Ações disponíveis suficiente!");
+                }
+
                 Ordem ordemSalvar = new Ordem();
-                BeanUtils.copyProperties(ordem,ordemSalvar);
-                ordemSalvar.setStatusOrdem(enumStatus.ABERTA);
-                ordemSalvar.setDataLancamento(LocalDateTime.now());
-                ordemSalvar.setQuantidadeAberto(ordemSalvar.getQuantidadeOrdem());
-                ordemSalvar.setValorClienteBloqueado(valorOrdem);
-                ordemSalva = ordemRepository.save(ordemSalvar);
+                System.out.println("quantDisponivel"+quantDisponivel);
+                System.out.println("rdem.quantidadeOrdem()"+ordem.quantidadeOrdem());
+                System.out.println("rdem.itensCarteiraBloqueado * -1)()"+(itensCarteiraBloqueado * -1));
+
+                if(quantDisponivel >= ordem.quantidadeOrdem()){
+                    CarteiraModel carteiraModel = new CarteiraModel();
+                    carteiraModel.setIdCliente(cliente.get().getId());
+                    carteiraModel.setIdAtivo(ordem.idAtivo());
+                    carteiraModel.setQuantidade(0);
+                    carteiraModel.setQuantidadeBloqueada(ordem.quantidadeOrdem());
+                    carteiraModel.setDataCompra(LocalDateTime.now());
+                    carteiraRepository.save(carteiraModel);
+
+                    BeanUtils.copyProperties(ordem,ordemSalvar);
+                    ordemSalvar.setStatusOrdem(enumStatus.ABERTA);
+                    ordemSalvar.setDataLancamento(LocalDateTime.now());
+                    ordemSalvar.setQuantidadeAberto(ordemSalvar.getQuantidadeOrdem());
+                    ordemSalvar.setValorClienteBloqueado(valorOrdem);
+                    ordemSalva = ordemRepository.save(ordemSalvar);
+                }else{
+                    throw new RecursoNaoAceitoException("Ordem", "Não possui Ações disponíveis suficiente!");
+                }
+
+
             }
         }
         return ordemSalva;
@@ -167,19 +192,40 @@ public class OrdemService {
                 throw new RecursoNaoAceitoException("Cancelar Ordem ", "pois esta ordem já foi executada");
             }else{
                 ordem.get().setStatusOrdem(enumStatus.CANCELADA);
-                try {
-                    double valorOrdem = ordem.get().getQuantidadeOrdem() * ordem.get().getValorOrdem();
-                    Optional<ClienteModel> clienteModel = clienteRepository.findById(ordem.get().getIdCliente());
-                    if(clienteModel.isPresent()){
-                        clienteModel.get().setValorBloqueado(clienteModel.get().getValorBloqueado() - valorOrdem);
-                        if(ordem.get().getTipoOrdem().equals(enumTipoOrdem.ORDEM_COMPRA)){
-                            clienteModel.get().setSaldo(clienteModel.get().getSaldo() + valorOrdem);
+                if(ordem.get().getTipoOrdem().equals(enumTipoOrdem.ORDEM_COMPRA)){
+                    try {
+                        double valorOrdem = ordem.get().getQuantidadeOrdem() * ordem.get().getValorOrdem();
+                        Optional<ClienteModel> clienteModel = clienteRepository.findById(ordem.get().getIdCliente());
+                        if(clienteModel.isPresent()){
+                            clienteModel.get().setValorBloqueado(clienteModel.get().getValorBloqueado() - valorOrdem);
+                            if(ordem.get().getTipoOrdem().equals(enumTipoOrdem.ORDEM_COMPRA)){
+                                clienteModel.get().setSaldo(clienteModel.get().getSaldo() + valorOrdem);
+                            }
+                            clienteRepository.save(clienteModel.get());
                         }
-                        clienteRepository.save(clienteModel.get());
+                        ordemSalva = ordemRepository.save(ordem.get());
+                    }catch (ObjectOptimisticLockingFailureException ex){ //Verifica se não esta sendo processada em outro lugar
+                        throw new RecursoNaoAceitoException("Cancelar Ordem ", "pois esta ordem esta em conflido com processamento, tente novamente!");
                     }
-                    ordemSalva = ordemRepository.save(ordem.get());
-                }catch (ObjectOptimisticLockingFailureException ex){ //Verifica se não esta sendo processada em outro lugar
-                    throw new RecursoNaoAceitoException("Cancelar Ordem ", "pois esta ordem esta em conflido com processamento, tente novamente!");
+                }else{
+                    try {
+                        List<CarteiraModel> carteiras = carteiraRepository.listarItensBloqueadoCarteira(ordem.get().getIdCliente(),ordem.get().getIdAtivo());
+                        Integer qntRestante = ordem.get().getQuantidadeOrdem();
+                        for(int i=0; i<carteiras.size();i++){
+                            if(carteiras.get(i).getQuantidadeBloqueada() >0){
+                                if(carteiras.get(i).getQuantidadeBloqueada() > qntRestante){
+                                    carteiras.get(i).setQuantidadeBloqueada(carteiras.get(i).getQuantidadeBloqueada() - qntRestante);
+                                    carteiraRepository.save(carteiras.get(i));
+                                }else{
+                                    carteiraRepository.delete(carteiras.get(i));
+                                }
+                                qntRestante = qntRestante - carteiras.get(i).getQuantidadeBloqueada();
+                            }
+                        }
+                        ordemSalva = ordemRepository.save(ordem.get());
+                    }catch (ObjectOptimisticLockingFailureException ex){ //Verifica se não esta sendo processada em outro lugar
+                        throw new RecursoNaoAceitoException("Cancelar Ordem ", "pois esta ordem esta em conflido com processamento, tente novamente!");
+                    }
                 }
             }
 
