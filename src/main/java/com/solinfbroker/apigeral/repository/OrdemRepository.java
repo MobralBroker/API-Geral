@@ -12,7 +12,7 @@ public interface OrdemRepository extends JpaRepository<Ordem,Long> {
 
     List<Ordem> findByTipoOrdem(enumTipoOrdem tipo);
 
-    List<Ordem> findByIdCliente(Long idCliente);
+    List<Ordem> findByIdClienteOrderByDataLancamentoDesc(Long idCliente);
 
     @Query(value = "SELECT * FROM ordem o WHERE o.status_ordem = 'ABERTA' OR o.status_ordem = 'EXECUTADA_PARCIAL' order by data_lancamento desc ",nativeQuery = true)
     List<Ordem> findByStatusOrdemAberta();

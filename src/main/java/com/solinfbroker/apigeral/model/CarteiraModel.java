@@ -23,7 +23,10 @@ public class CarteiraModel {
   private Long idAtivo;
 
   @Column(nullable = false)
-  private double quantidade;
+  private Integer quantidade;
+
+  @Column(nullable = false)
+  private Integer quantidadeBloqueada;
 
   @Column(name = "data_compra", nullable = false)
   @JsonFormat(pattern="dd/MM/yyyy")
