@@ -2,10 +2,8 @@ package com.solinfbroker.apigeral.service;
 
 import com.solinfbroker.apigeral.config.exceptions.RecursoNaoAceitoException;
 import com.solinfbroker.apigeral.dtos.OrdemDTO;
-import com.solinfbroker.apigeral.model.ClienteModel;
-import com.solinfbroker.apigeral.model.Ordem;
-import com.solinfbroker.apigeral.model.enumStatus;
-import com.solinfbroker.apigeral.model.enumTipoOrdem;
+import com.solinfbroker.apigeral.model.*;
+import com.solinfbroker.apigeral.repository.CarteiraRepository;
 import com.solinfbroker.apigeral.repository.ClienteRepository;
 import com.solinfbroker.apigeral.repository.OperacaoRepository;
 import com.solinfbroker.apigeral.repository.OrdemRepository;
@@ -23,6 +21,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -36,6 +35,9 @@ class OrdemServiceTest {
     private OperacaoRepository operacaoRepository;
     @Mock
     private ClienteRepository clienteRepository;
+
+    @Mock
+    private CarteiraRepository carteiraRepository;
     @InjectMocks
     private OrdemService ordemService;
 
@@ -95,7 +97,7 @@ class OrdemServiceTest {
     }
 
     @Test
-    void testCriarOrdemException() {
+    void testCriarOrdemCompraException() {
         OrdemDTO ordem = mock(OrdemDTO.class);
         ClienteModel clienteMock = mock(ClienteModel.class);
         Optional<ClienteModel> clienteOpt = Optional.of(clienteMock);
@@ -112,7 +114,7 @@ class OrdemServiceTest {
     }
 
     @Test
-    void testCriarOrdemErro() {
+    void testCriarOrdemVendaErroSemAcaoDisponivel() {
         OrdemDTO ordem = mock(OrdemDTO.class);
         ClienteModel clienteMock = mock(ClienteModel.class);
         Optional<ClienteModel> clienteOpt = Optional.of(clienteMock);
@@ -121,7 +123,45 @@ class OrdemServiceTest {
         when(clienteRepository.findById(any())).thenReturn(clienteOpt);
         when(ordem.valorOrdem()).thenReturn(2.0);
         when(ordem.quantidadeOrdem()).thenReturn(2);
+        when(carteiraRepository.buscarQuantideCarteira(anyLong(),anyLong())).thenReturn(1);
+        when(carteiraRepository.buscarQuantidadeBloqueadoCarteira(anyLong(),anyLong())).thenReturn(1);
+
+        assertThrows( RecursoNaoAceitoException.class,() ->{
+            ordemService.criarOrdem(ordem);
+        });
+    }
+
+    @Test
+    void testCriarOrdemVendaErroQuantidadeMaiorQueDisponivel() {
+        OrdemDTO ordem = mock(OrdemDTO.class);
+        ClienteModel clienteMock = mock(ClienteModel.class);
+        Optional<ClienteModel> clienteOpt = Optional.of(clienteMock);
+
+        when(ordem.tipoOrdem()).thenReturn(enumTipoOrdem.ORDEM_VENDA);
+        when(clienteRepository.findById(any())).thenReturn(clienteOpt);
+        when(ordem.valorOrdem()).thenReturn(2.0);
+        when(ordem.quantidadeOrdem()).thenReturn(3);
+        when(carteiraRepository.buscarQuantideCarteira(anyLong(),anyLong())).thenReturn(2);
+        when(carteiraRepository.buscarQuantidadeBloqueadoCarteira(anyLong(),anyLong())).thenReturn(1);
+
+        assertThrows( RecursoNaoAceitoException.class,() ->{
+            ordemService.criarOrdem(ordem);
+        });
+    }
+
+    @Test
+    void testCriarOrdemVendaSucesso() {
+        OrdemDTO ordem = mock(OrdemDTO.class);
+        ClienteModel clienteMock = mock(ClienteModel.class);
+        Optional<ClienteModel> clienteOpt = Optional.of(clienteMock);
+
+        when(ordem.tipoOrdem()).thenReturn(enumTipoOrdem.ORDEM_VENDA);
+        when(clienteRepository.findById(any())).thenReturn(clienteOpt);
+        when(ordem.valorOrdem()).thenReturn(2.0);
+        when(ordem.quantidadeOrdem()).thenReturn(1);
         when(ordemRepository.save(any())).thenReturn(new Ordem());
+        when(carteiraRepository.buscarQuantideCarteira(anyLong(),anyLong())).thenReturn(2);
+        when(carteiraRepository.buscarQuantidadeBloqueadoCarteira(anyLong(),anyLong())).thenReturn(1);
 
         assertThat(ordemService.criarOrdem(ordem)).isNotNull();
     }
@@ -140,7 +180,7 @@ class OrdemServiceTest {
     }
 
     @Test
-    void testCancelarOrdemComSucesso() {
+    void testCancelarOrdemCompraComSucesso() {
         Ordem ordem = mock(Ordem.class);
         Optional<Ordem> ordemOpt = Optional.of(ordem);
         ClienteModel cliente = mock(ClienteModel.class);
@@ -152,6 +192,27 @@ class OrdemServiceTest {
         when(ordem.getIdCliente()).thenReturn(1L);
         when(clienteRepository.findById(1L)).thenReturn(clienteOpt);
         when(ordemRepository.save(ordem)).thenReturn(ordem);
+        assertThat(ordemService.cancelarOrdem(1L)).isNotNull();
+    }
+
+    @Test
+    void testCancelarOrdemVendaComSucesso() {
+        Ordem ordem = mock(Ordem.class);
+        Optional<Ordem> ordemOpt = Optional.of(ordem);
+        ordem.setQuantidadeOrdem(1);
+        CarteiraModel carteiraModel = mock(CarteiraModel.class);
+        carteiraModel.setQuantidadeBloqueada(2);
+        List<CarteiraModel> carteiraModelList = List.of(carteiraModel);
+
+        when(ordemRepository.findById(1L)).thenReturn(ordemOpt);
+        when(ordem.getStatusOrdem()).thenReturn(enumStatus.ABERTA);
+        when(ordem.getTipoOrdem()).thenReturn(enumTipoOrdem.ORDEM_VENDA);
+        when(ordemRepository.save(ordem)).thenReturn(ordem);
+        when(carteiraModel.getQuantidadeBloqueada()).thenReturn(2);
+        when(ordem.getQuantidadeOrdem()).thenReturn(1);
+        when(carteiraRepository.listarItensBloqueadoCarteira(anyLong(),anyLong())).thenReturn(carteiraModelList);
+//        when(carteiraRepository.save(any())).thenReturn(new CarteiraModel());
+
         assertThat(ordemService.cancelarOrdem(1L)).isNotNull();
     }
 

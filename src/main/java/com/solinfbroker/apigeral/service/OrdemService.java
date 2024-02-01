@@ -155,9 +155,6 @@ public class OrdemService {
                 }
 
                 Ordem ordemSalvar = new Ordem();
-                System.out.println("quantDisponivel"+quantDisponivel);
-                System.out.println("rdem.quantidadeOrdem()"+ordem.quantidadeOrdem());
-                System.out.println("rdem.itensCarteiraBloqueado * -1)()"+(itensCarteiraBloqueado * -1));
 
                 if(quantDisponivel >= ordem.quantidadeOrdem()){
                     CarteiraModel carteiraModel = new CarteiraModel();
@@ -228,7 +225,6 @@ public class OrdemService {
                     }
                 }
             }
-
         }
         return ordemSalva;
     }
