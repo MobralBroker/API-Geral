@@ -32,15 +32,14 @@ public class SecurityFilter extends OncePerRequestFilter{
                 try {
                     ResponseEntity<String> responseAuth = this.restTemplate.getForEntity(pathAutenticacao+"/auth/validar?token="+token, String.class);
                     if(responseAuth.getStatusCode().equals(HttpStatus.UNAUTHORIZED)){
-                        response.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
+                        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                         response.setCharacterEncoding(utf);
                         response.getWriter().println(tokenInvalido);
                     }else{
                         filterChain.doFilter(request, response);
                     }
                 }catch (Exception e){
-
-                    response.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                     response.setCharacterEncoding(utf);
                     response.getWriter().println(tokenInvalido);
                 }
@@ -62,7 +61,7 @@ public class SecurityFilter extends OncePerRequestFilter{
                    ) {
                     filterChain.doFilter(request, response);
                 } else {
-                    response.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                     response.setCharacterEncoding(utf);
                     response.getWriter().println(tokenInvalido);
                 }

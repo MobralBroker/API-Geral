@@ -56,8 +56,9 @@ public class CarteiraController {
       carteiraDTOs.add(new CarteiraGrupoDTO(
               (Long) resultado[0],
               (Long) resultado[1],
-              (Long) resultado[2],
-              (String) resultado[3]
+              (Long) resultado[2] - (Long) resultado[4],
+              (String) resultado[3],
+              (Long) resultado[4]
       ));
     }
     return ResponseEntity.ok(carteiraDTOs);

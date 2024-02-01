@@ -10,7 +10,9 @@ public record CarteiraGrupoDTO(
         @Column(name = "quantidade")
         Long quantidade,
         @Column(name = "sigla")
-        String sigla
+        String sigla,
+        @Column(name = "quantidade_bloqueada")
+        Long quantidadeBloqueada
 ) {
 
 }
